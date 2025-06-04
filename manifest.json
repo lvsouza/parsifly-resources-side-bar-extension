@@ -8,7 +8,7 @@
   "views": [
     {
       "key": "resources-side-bar",
-      "type": "list-view",
+      "type": "tab-view",
       "title": "Resources",
       "description": "Show the project resources in one place",
       "actions": [
@@ -17,6 +17,35 @@
           "key": "add-resources",
           "label": "Add new resource",
           "description": "Allow you to add pages, components or services"
+        }
+      ],
+      "tabs": [
+        {
+          "key": "tab-pages",
+          "label": "Pages",
+          "icon": "VscWindow",
+          "description": "Show all pages",
+          "dataProvider": {
+            "key": "data-provider"
+          }
+        },
+        {
+          "key": "tab-components",
+          "label": "Components",
+          "icon": "VscRuby",
+          "description": "Show all components",
+          "dataProvider": {
+            "key": "data-provider"
+          }
+        },
+        {
+          "key": "tab-services",
+          "label": "Services",
+          "icon": "VscSymbolMethod",
+          "description": "Show all services",
+          "dataProvider": {
+            "key": "data-provider"
+          }
         }
       ]
     }

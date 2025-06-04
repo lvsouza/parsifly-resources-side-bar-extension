@@ -1,76 +1,88 @@
-import { ExtensionBase, TView, } from '@pb/extension-basics';
+import { ExtensionBase, TabsView, ListProvider, Action, TabView, Envs } from '@pb/extension-basics';
 
+// Envs.DEBUG = true;
 
 new class Extension extends ExtensionBase {
-  views: TView[] = [
-    {
-      key: 'resources-side-bar',
-      actions: [
-        {
-          key: 'add-resources',
-          action: async () => {
-            const type = await this.application.commands.editor.showQuickPick({
-              placeholder: 'Example: page',
-              helpText: 'Opções: page, component or service',
-              title: 'Witch type of resource do you want to create?',
-            });
-            if (type === undefined) return;
+  resourcesListView = new TabsView({
+    key: 'resources-side-bar',
+    actions: [
+      new Action({
+        key: 'add-resources',
+        action: async () => {
+          console.log('Add resource');
+        }
+      }),
+    ],
+    tabs: [
+      new TabView({
+        key: 'tab-pages',
+        dataProvider: new ListProvider({
+          key: 'data-provider',
+          getItems: async (item) => {
+            console.log('item', item);
 
-            switch (type) {
-              case 'page':
-                const pageName = await this.application.commands.editor.showQuickPick({
-                  placeholder: 'Example: Page1',
-                  helpText: 'Write here the page name',
-                  title: 'Witch is the name of the page?',
-                });
-                await this.application.commands.editor.feedback(`A page with name "${pageName}" was created`, 'success');
-                break;
-              case 'component':
-                const componentName = await this.application.commands.editor.showQuickPick({
-                  placeholder: 'Example: Component1',
-                  helpText: 'Write here the component name',
-                  title: 'Witch is the name of the component?',
-                });
-                await this.application.commands.editor.feedback(`A component with name "${componentName}" was created`, 'success');
-                break;
-              case 'service':
-                const serviceName = await this.application.commands.editor.showQuickPick({
-                  placeholder: 'Example: Service1',
-                  helpText: 'Write here the service name',
-                  title: 'Witch is the name of the service?',
-                });
-                await this.application.commands.editor.feedback(`A service with name "${serviceName}" was created`, 'success');
-                break;
+            const pages = await this.application.dataProviders.project.pages();
+            console.log('pages', pages);
 
-              default:
-                await this.application.commands.editor.feedback(`Type of resource "${type}" not found.`, 'error');
-                break;
-            }
+            return pages.map((page: any) => ({
+              key: page.id,
+              label: page.name,
+              icon: 'VscWindow',
+            }));
           },
-        },
-      ],
-    },
-  ];
+        }),
+      }),
+      new TabView({
+        key: 'tab-components',
+        dataProvider: new ListProvider({
+          key: 'data-provider',
+          getItems: async (item) => {
+            console.log('item', item);
+
+            const components = await this.application.dataProviders.project.components();
+            console.log('components', components);
+
+            return components.map((page: any) => ({
+              key: page.id,
+              label: page.name,
+              icon: 'VscRuby',
+            }));
+          },
+        }),
+      }),
+      new TabView({
+        key: 'tab-services',
+        dataProvider: new ListProvider({
+          key: 'data-provider',
+          getItems: async (item) => {
+            console.log('item', item);
+
+            const services = await this.application.dataProviders.project.services();
+            console.log('services', services);
+
+            return services.map((page: any) => ({
+              key: page.id,
+              label: page.name,
+              icon: 'VscSymbolMethod',
+            }));
+          },
+        }),
+      }),
+    ],
+  });
 
 
-  activate() {
+  async activate() {
     console.log('EXTENSION: Activating');
 
-    this.application.commands.editor.showPrimarySideBarByKey('resources-side-bar');
+    await this.application.views.register(this.resourcesListView);
 
-    this.application.dataProviders.project.pages().then(pages => {
-      this.application.commands.editor.setSideBarItems(
-        'resources-side-bar',
-        pages.map((page: any) => ({
-          key: page.id,
-          label: page.name,
-          icon: 'VscWindow',
-        }))
-      );
-    });
+    await this.application.commands.editor.showPrimarySideBarByKey('resources-side-bar');
   }
 
-  deactivate() {
+  async deactivate() {
     console.log('EXTENSION: Deactivating');
+
+    await this.application.views.unregister(this.resourcesListView);
   }
 };
