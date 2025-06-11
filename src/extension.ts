@@ -1,8 +1,71 @@
-import { ExtensionBase, TabsView, ListProvider, Action, TabView, Envs } from '@pb/extension-basics';
+import { ExtensionBase, TabsView, ListProvider, Action, TabView, Envs, TListViewItem } from '@pb/extension-basics';
 
 // Envs.DEBUG = true;
 
+type Page = {
+  id: string;
+  name: string;
+  folders?: string[];
+};
+
+
 new class Extension extends ExtensionBase {
+
+  getChildrenByItemKey(items: Page[], key?: string, itemIcon?: string): TListViewItem[] {
+    const result: TListViewItem[] = [];
+
+    const currentLevel = key ? key.split('/') : [];
+    const seenFolders = new Set<string>();
+
+    for (const item of items) {
+      const folders = item.folders ?? [];
+
+      // Root: páginas sem folders
+      if (!key && folders.length === 0) {
+        result.push({
+          key: item.id,
+          icon: itemIcon,
+          label: item.name,
+          children: false
+        });
+        continue;
+      }
+
+      // Confere se a pasta atual bate com o nível
+      const match = folders.slice(0, currentLevel.length).join('/') === currentLevel.join('/');
+
+      if (!match) continue;
+
+      const next = folders[currentLevel.length];
+
+      // Página diretamente neste nível
+      if (folders.length === currentLevel.length) {
+        result.push({
+          key: item.id,
+          icon: itemIcon,
+          label: item.name,
+          children: false
+        });
+      }
+
+      // Subpasta
+      if (next) {
+        const fullPath = [...currentLevel, next].join('/');
+        if (!seenFolders.has(fullPath)) {
+          result.push({
+            key: fullPath,
+            label: next,
+            icon: 'VscFolder',
+            children: true
+          });
+          seenFolders.add(fullPath);
+        }
+      }
+    }
+
+    return result;
+  }
+
   resourcesListView = new TabsView({
     key: 'resources-side-bar',
     actions: [
@@ -19,16 +82,10 @@ new class Extension extends ExtensionBase {
         dataProvider: new ListProvider({
           key: 'data-provider',
           getItems: async (item) => {
-            console.log('item', item);
-
             const pages = await this.application.dataProviders.project.pages();
-            console.log('pages', pages);
+            const result = this.getChildrenByItemKey(pages, item?.key, 'VscWindow');
 
-            return pages.map((page: any) => ({
-              key: page.id,
-              label: page.name,
-              icon: 'VscWindow',
-            }));
+            return result;
           },
         }),
       }),
@@ -37,16 +94,10 @@ new class Extension extends ExtensionBase {
         dataProvider: new ListProvider({
           key: 'data-provider',
           getItems: async (item) => {
-            console.log('item', item);
-
             const components = await this.application.dataProviders.project.components();
-            console.log('components', components);
+            const result = this.getChildrenByItemKey(components, item?.key, 'VscRuby');
 
-            return components.map((page: any) => ({
-              key: page.id,
-              label: page.name,
-              icon: 'VscRuby',
-            }));
+            return result;
           },
         }),
       }),
@@ -55,16 +106,10 @@ new class Extension extends ExtensionBase {
         dataProvider: new ListProvider({
           key: 'data-provider',
           getItems: async (item) => {
-            console.log('item', item);
-
             const services = await this.application.dataProviders.project.services();
-            console.log('services', services);
+            const result = this.getChildrenByItemKey(services, item?.key, 'VscSymbolMethod');
 
-            return services.map((page: any) => ({
-              key: page.id,
-              label: page.name,
-              icon: 'VscSymbolMethod',
-            }));
+            return result;
           },
         }),
       }),
