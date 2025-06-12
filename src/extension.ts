@@ -1,4 +1,4 @@
-import { ExtensionBase, TabsView, ListProvider, Action, TabView, Envs, TListViewItem } from '@pb/extension-basics';
+import { ExtensionBase, TabsView, ListProvider, Action, TabView, ListViewItem } from '@pb/extension-basics';
 
 // Envs.DEBUG = true;
 
@@ -11,8 +11,8 @@ type Page = {
 
 new class Extension extends ExtensionBase {
 
-  getChildrenByItemKey(items: Page[], key?: string, itemIcon?: string): TListViewItem[] {
-    const result: TListViewItem[] = [];
+  getChildrenByItemKey(items: Page[], key?: string, itemIcon?: string): ListViewItem[] {
+    const result: ListViewItem[] = [];
 
     const currentLevel = key ? key.split('/') : [];
     const seenFolders = new Set<string>();
@@ -22,12 +22,14 @@ new class Extension extends ExtensionBase {
 
       // Root: páginas sem folders
       if (!key && folders.length === 0) {
-        result.push({
-          key: item.id,
-          icon: itemIcon,
-          label: item.name,
-          children: false
-        });
+        result.push(
+          new ListViewItem({
+            key: item.id,
+            icon: itemIcon,
+            label: item.name,
+            children: false
+          })
+        );
         continue;
       }
 
@@ -40,24 +42,28 @@ new class Extension extends ExtensionBase {
 
       // Página diretamente neste nível
       if (folders.length === currentLevel.length) {
-        result.push({
-          key: item.id,
-          icon: itemIcon,
-          label: item.name,
-          children: false
-        });
+        result.push(
+          new ListViewItem({
+            key: item.id,
+            icon: itemIcon,
+            label: item.name,
+            children: false
+          })
+        );
       }
 
       // Subpasta
       if (next) {
         const fullPath = [...currentLevel, next].join('/');
         if (!seenFolders.has(fullPath)) {
-          result.push({
-            key: fullPath,
-            label: next,
-            icon: 'VscFolder',
-            children: true
-          });
+          result.push(
+            new ListViewItem({
+              key: fullPath,
+              label: next,
+              icon: 'VscFolder',
+              children: true
+            })
+          );
           seenFolders.add(fullPath);
         }
       }
