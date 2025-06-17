@@ -1,8 +1,24 @@
-# Export project extension
+# parsifly-extension-resources-side-bar
 
 ## Overview 
 
-This project is a extension for page builder
+This extension provide a resources side bar. It cam be used to view the resources of the project.
+
+## Install
+
+Run yarn to install the dependencies
+
+```
+yarn
+```
+
+## Run
+
+Run yarn dev to run the extension in `http://localhost:5555/package.json`
+
+```
+yarn dev
+```
 
 ## Build
 
@@ -14,7 +30,7 @@ yarn build
 
 ## Deploy
 
-This project is at the npm.
+Run npm publish to deploy this extension to npm.
 
 ```
 npm publish

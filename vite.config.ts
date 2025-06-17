@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite';
 
+import { name } from './package.json';
+
 
 export default defineConfig({
   root: './',
@@ -7,10 +9,10 @@ export default defineConfig({
     sourcemap: false,
     emptyOutDir: true,
     lib: {
+      name,
       formats: ['es'],
-      entry: './src/extension.ts',
-      name: 'export-project-extension',
       fileName: () => `index.js`,
+      entry: './src/extension.ts',
     },
   },
   server: {
