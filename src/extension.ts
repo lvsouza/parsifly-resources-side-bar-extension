@@ -1,4 +1,4 @@
-import { ExtensionBase, TabsView, ListProvider, Action, TabView, ListViewItem, IPage, IComponent, IService } from '@pb/extension-basics';
+import { ExtensionBase, TabsView, ListProvider, Action, TabView, ListViewItem, IPage, IComponent, IService } from '@parsifly/extension-basics';
 
 // Envs.DEBUG = true;
 
