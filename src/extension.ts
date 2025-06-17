@@ -1,17 +1,11 @@
-import { ExtensionBase, TabsView, ListProvider, Action, TabView, ListViewItem } from '@pb/extension-basics';
+import { ExtensionBase, TabsView, ListProvider, Action, TabView, ListViewItem, IPage, IComponent, IService } from '@pb/extension-basics';
 
 // Envs.DEBUG = true;
-
-type Page = {
-  id: string;
-  name: string;
-  folders?: string[];
-};
 
 
 new class Extension extends ExtensionBase {
 
-  getChildrenByItemKey(items: Page[], key?: string, itemIcon?: string): ListViewItem[] {
+  getChildrenByItemKey(items: (IPage | IComponent | IService)[], key?: string, itemIcon?: string): ListViewItem[] {
     const result: ListViewItem[] = [];
 
     const currentLevel = key ? key.split('/') : [];
@@ -79,6 +73,53 @@ new class Extension extends ExtensionBase {
         key: 'add-resources',
         action: async () => {
           console.log('Add resource');
+
+          const type = await this.application.commands.editor.showQuickPick({
+            title: 'Type of resource?',
+            placeholder: 'Example: page',
+            helpText: '"page", "component" or "service"',
+          });
+
+          if (!type) return;
+          if (!['page', 'component', 'service'].includes(type)) {
+            this.application.commands.editor.feedback(`Type of resource ${type} not valid. Please use "page", "component" or "service".`, 'error')
+            return;
+          }
+
+          const name = await this.application.commands.editor.showQuickPick({
+            title: 'Name of resource?',
+            placeholder: 'Example: Resource1',
+            helpText: 'Type the name of the resource.',
+          });
+          if (!name) return;
+
+          if (type === 'page') {
+            this.application.dataProviders.project.pages.add({
+              name: name,
+              folders: [],
+              type: 'page',
+              description: '',
+              id: crypto.randomUUID(),
+            });
+          } else if (type === 'component') {
+            this.application.dataProviders.project.components.add({
+              name: name,
+              folders: [],
+              description: '',
+              type: 'component',
+              id: crypto.randomUUID(),
+            });
+          } else if (type === 'service') {
+            this.application.dataProviders.project.services.add({
+              name: name,
+              folders: [],
+              description: '',
+              type: 'service',
+              id: crypto.randomUUID(),
+            });
+          }
+
+          this.application.views.refresh(this.resourcesListView);
         }
       }),
     ],
@@ -93,6 +134,11 @@ new class Extension extends ExtensionBase {
 
             return result;
           },
+          onItemClick: async (item) => {
+            if (item.children) return;
+
+            await this.application.commands.editor.feedback(`Clicked at ${item.label}`, 'info');
+          },
         }),
       }),
       new TabView({
@@ -105,6 +151,11 @@ new class Extension extends ExtensionBase {
 
             return result;
           },
+          onItemClick: async (item) => {
+            if (item.children) return;
+
+            await this.application.commands.editor.feedback(`Clicked at ${item.label}`, 'info');
+          },
         }),
       }),
       new TabView({
@@ -116,6 +167,11 @@ new class Extension extends ExtensionBase {
             const result = this.getChildrenByItemKey(services, item?.key, 'VscSymbolMethod');
 
             return result;
+          },
+          onItemClick: async (item) => {
+            if (item.children) return;
+
+            await this.application.commands.editor.feedback(`Clicked at ${item.label}`, 'info');
           },
         }),
       }),
