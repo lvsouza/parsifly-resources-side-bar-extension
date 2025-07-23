@@ -137,7 +137,7 @@ new class Extension extends ExtensionBase {
           onItemClick: async (item) => {
             if (item.children) return;
 
-            await this.application.commands.editor.feedback(`Clicked at ${item.label}`, 'info');
+            await this.application.editors.open(item.key);
           },
         }),
       }),
@@ -154,7 +154,7 @@ new class Extension extends ExtensionBase {
           onItemClick: async (item) => {
             if (item.children) return;
 
-            await this.application.commands.editor.feedback(`Clicked at ${item.label}`, 'info');
+            await this.application.editors.open(item.key);
           },
         }),
       }),
@@ -171,7 +171,7 @@ new class Extension extends ExtensionBase {
           onItemClick: async (item) => {
             if (item.children) return;
 
-            await this.application.commands.editor.feedback(`Clicked at ${item.label}`, 'info');
+            await this.application.editors.open(item.key);
           },
         }),
       }),
@@ -182,7 +182,7 @@ new class Extension extends ExtensionBase {
   async activate() {
     console.log('EXTENSION: Activating');
 
-    await this.application.views.register(this.resourcesListView);
+    this.application.views.register(this.resourcesListView);
 
     await this.application.commands.editor.showPrimarySideBarByKey('resources-side-bar');
   }
@@ -190,6 +190,6 @@ new class Extension extends ExtensionBase {
   async deactivate() {
     console.log('EXTENSION: Deactivating');
 
-    await this.application.views.unregister(this.resourcesListView);
+    this.application.views.unregister(this.resourcesListView);
   }
 };
