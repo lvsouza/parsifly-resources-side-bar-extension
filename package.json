@@ -1,6 +1,6 @@
 {
   "name": "parsifly-extension-resources-side-bar",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "module": "dist/index.js",
   "manifest": "manifest.json",
   "private": false,
@@ -9,7 +9,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@parsifly/extension-basics": "github:lvsouza/parsifly-extension-base#main"
+    "parsifly-extension-base": "^1.0.0"
   },
   "devDependencies": {
     "typescript": "^5.6.2",

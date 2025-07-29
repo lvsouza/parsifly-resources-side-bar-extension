@@ -1,4 +1,4 @@
-import { ExtensionBase, TabsView, ListProvider, Action, TabView, ListViewItem, IPage, IComponent, IService } from '@parsifly/extension-basics';
+import { ExtensionBase, TabsView, ListProvider, Action, TabView, ListViewItem, IPage, IComponent, IService } from 'parsifly-extension-base';
 
 // Envs.DEBUG = true;
 
@@ -21,7 +21,13 @@ new class Extension extends ExtensionBase {
             key: item.id,
             icon: itemIcon,
             label: item.name,
-            children: false
+            children: false,
+            draggable: true,
+            draggableData: {
+              id: item.id,
+              type: item.type,
+              label: item.name,
+            }
           })
         );
         continue;
@@ -41,7 +47,13 @@ new class Extension extends ExtensionBase {
             key: item.id,
             icon: itemIcon,
             label: item.name,
-            children: false
+            children: false,
+            draggable: true,
+            draggableData: {
+              id: item.id,
+              type: item.type,
+              label: item.name,
+            }
           })
         );
       }
@@ -55,7 +67,7 @@ new class Extension extends ExtensionBase {
               key: fullPath,
               label: next,
               icon: 'VscFolder',
-              children: true
+              children: true,
             })
           );
           seenFolders.add(fullPath);
