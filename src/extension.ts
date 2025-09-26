@@ -142,6 +142,7 @@ new class Extension extends ExtensionBase {
           key: 'data-provider',
           getItems: async (item) => {
             const pages = await this.application.dataProviders.project.pages();
+
             const result = this.getChildrenByItemKey(pages, item?.key, 'VscWindow');
 
             return result;
@@ -151,6 +152,11 @@ new class Extension extends ExtensionBase {
 
             await this.application.editors.open(item.key);
           },
+          onItemDoubleClick: async (item) => {
+            if (item.children) return;
+
+            await this.application.editors.close(item.key);
+          }
         }),
       }),
       new TabView({
@@ -166,8 +172,13 @@ new class Extension extends ExtensionBase {
           onItemClick: async (item) => {
             if (item.children) return;
 
-            await this.application.editors.open(item.key);
+            await this.application.details.select(item.key);
           },
+          onItemDoubleClick: async (item) => {
+            if (item.children) return;
+
+            await this.application.details.unselect(item.key);
+          }
         }),
       }),
       new TabView({

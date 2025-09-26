@@ -9,7 +9,9 @@
     {
       "key": "resources-side-bar",
       "type": "tab-view",
+      "icon": "VscFiles",
       "title": "Resources",
+      "positionPreferred": "primary",
       "description": "Show the project resources in one place",
       "actions": [
         {
