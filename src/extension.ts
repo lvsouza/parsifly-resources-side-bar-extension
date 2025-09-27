@@ -172,12 +172,12 @@ new class Extension extends ExtensionBase {
           onItemClick: async (item) => {
             if (item.children) return;
 
-            await this.application.details.select(item.key);
+            await this.application.selection.select(item.key);
           },
           onItemDoubleClick: async (item) => {
             if (item.children) return;
 
-            await this.application.details.unselect(item.key);
+            await this.application.selection.unselect(item.key);
           }
         }),
       }),
