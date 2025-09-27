@@ -28,6 +28,7 @@
           "icon": "VscWindow",
           "description": "Show all pages",
           "dataProvider": {
+            "type": "list",
             "key": "data-provider"
           }
         },
@@ -37,6 +38,7 @@
           "icon": "VscRuby",
           "description": "Show all components",
           "dataProvider": {
+            "type": "list",
             "key": "data-provider"
           }
         },
@@ -46,6 +48,7 @@
           "icon": "VscSymbolMethod",
           "description": "Show all services",
           "dataProvider": {
+            "type": "list",
             "key": "data-provider"
           }
         }
