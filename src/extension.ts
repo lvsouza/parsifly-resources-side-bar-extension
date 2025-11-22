@@ -150,12 +150,12 @@ new class Extension extends ExtensionBase {
           onItemClick: async (item) => {
             if (item.children) return;
 
-            await this.application.editors.open(item.key);
+            await this.application.edition.open(item.key);
           },
           onItemDoubleClick: async (item) => {
             if (item.children) return;
 
-            await this.application.editors.close(item.key);
+            await this.application.edition.close(item.key);
           }
         }),
       }),
@@ -194,7 +194,7 @@ new class Extension extends ExtensionBase {
           onItemClick: async (item) => {
             if (item.children) return;
 
-            await this.application.editors.open(item.key);
+            await this.application.edition.open(item.key);
           },
         }),
       }),
