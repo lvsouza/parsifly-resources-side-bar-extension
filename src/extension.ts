@@ -148,14 +148,10 @@ new class Extension extends ExtensionBase {
             return result;
           },
           onItemClick: async (item) => {
-            if (item.children) return;
-
-            await this.application.edition.open(item.key);
+            await this.application.selection.select(item.key);
           },
           onItemDoubleClick: async (item) => {
-            if (item.children) return;
-
-            await this.application.edition.close(item.key);
+            await this.application.edition.open(item.key);
           }
         }),
       }),
@@ -165,19 +161,16 @@ new class Extension extends ExtensionBase {
           key: 'data-provider',
           getItems: async (item) => {
             const components = await this.application.dataProviders.project.components();
+
             const result = this.getChildrenByItemKey(components, item?.key, 'VscRuby');
 
             return result;
           },
           onItemClick: async (item) => {
-            if (item.children) return;
-
             await this.application.selection.select(item.key);
           },
           onItemDoubleClick: async (item) => {
-            if (item.children) return;
-
-            await this.application.selection.unselect(item.key);
+            await this.application.edition.open(item.key);
           }
         }),
       }),
@@ -187,15 +180,17 @@ new class Extension extends ExtensionBase {
           key: 'data-provider',
           getItems: async (item) => {
             const services = await this.application.dataProviders.project.services();
+
             const result = this.getChildrenByItemKey(services, item?.key, 'VscSymbolMethod');
 
             return result;
           },
           onItemClick: async (item) => {
-            if (item.children) return;
-
-            await this.application.edition.open(item.key);
+            await this.application.selection.select(item.key);
           },
+          onItemDoubleClick: async (item) => {
+            await this.application.edition.open(item.key);
+          }
         }),
       }),
     ],
