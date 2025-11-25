@@ -106,7 +106,7 @@ new class Extension extends ExtensionBase {
           if (!name) return;
 
           if (type === 'page') {
-            this.application.dataProviders.project.pages.add({
+            this.application.dataProviders.project().collection<IPage>('pages').add({
               name: name,
               folders: [],
               type: 'page',
@@ -114,7 +114,7 @@ new class Extension extends ExtensionBase {
               id: crypto.randomUUID(),
             });
           } else if (type === 'component') {
-            this.application.dataProviders.project.components.add({
+            this.application.dataProviders.project().collection<IComponent>('components').add({
               name: name,
               folders: [],
               description: '',
@@ -122,7 +122,7 @@ new class Extension extends ExtensionBase {
               id: crypto.randomUUID(),
             });
           } else if (type === 'service') {
-            this.application.dataProviders.project.services.add({
+            this.application.dataProviders.project().collection<IService>('services').add({
               name: name,
               folders: [],
               description: '',
@@ -141,7 +141,7 @@ new class Extension extends ExtensionBase {
         dataProvider: new ListProvider({
           key: 'data-provider',
           getItems: async (item) => {
-            const pages = await this.application.dataProviders.project.pages();
+            const pages = await this.application.dataProviders.project().collection<IPage>('pages').value();
 
             const result = this.getChildrenByItemKey(pages, item?.key, 'VscWindow');
 
@@ -160,7 +160,7 @@ new class Extension extends ExtensionBase {
         dataProvider: new ListProvider({
           key: 'data-provider',
           getItems: async (item) => {
-            const components = await this.application.dataProviders.project.components();
+            const components = await this.application.dataProviders.project().collection<IComponent>('components').value();
 
             const result = this.getChildrenByItemKey(components, item?.key, 'VscRuby');
 
@@ -179,7 +179,7 @@ new class Extension extends ExtensionBase {
         dataProvider: new ListProvider({
           key: 'data-provider',
           getItems: async (item) => {
-            const services = await this.application.dataProviders.project.services();
+            const services = await this.application.dataProviders.project().collection<IService>('services').value();
 
             const result = this.getChildrenByItemKey(services, item?.key, 'VscSymbolMethod');
 
