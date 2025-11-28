@@ -219,27 +219,8 @@ new class Extension extends ExtensionBase {
           key: 'data-provider',
           getItems: async () => {
             const components = await this.application.dataProviders.project().collection<IComponent>('components').value();
-
-            return components.map(component => (
-              new ListViewItem({
-                icon: 'VscRuby',
-                children: false,
-                draggable: true,
-                key: component.id,
-                label: component.name,
-                draggableData: {
-                  id: component.id,
-                  type: component.type,
-                  label: component.name,
-                },
-                onItemClick: async () => {
-                  await this.application.selection.select(component.id);
-                },
-                onItemDoubleClick: async () => {
-                  await this.application.edition.open(component.id);
-                }
-              })
-            ));
+            const items = this.loadComponents(components)
+            return items
           },
         }),
       }),
@@ -249,27 +230,8 @@ new class Extension extends ExtensionBase {
           key: 'data-provider',
           getItems: async () => {
             const services = await this.application.dataProviders.project().collection<IService>('services').value();
-
-            return services.map(service => (
-              new ListViewItem({
-                children: false,
-                draggable: true,
-                key: service.id,
-                label: service.name,
-                icon: 'VscSymbolMethod',
-                draggableData: {
-                  id: service.id,
-                  type: service.type,
-                  label: service.name,
-                },
-                onItemClick: async () => {
-                  await this.application.selection.select(service.id);
-                },
-                onItemDoubleClick: async () => {
-                  await this.application.edition.open(service.id);
-                }
-              })
-            ));
+            const items = this.loadServices(services)
+            return items
           },
         }),
       }),
