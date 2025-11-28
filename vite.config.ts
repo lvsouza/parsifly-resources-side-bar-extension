@@ -18,5 +18,8 @@ export default defineConfig({
   server: {
     port: 5555,
     cors: { origin: '*' },
-  }
+    watch: {
+      ignored: ['**/node_modules/**', '**/dist/**']
+    }
+  },
 })

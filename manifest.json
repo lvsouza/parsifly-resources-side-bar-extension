@@ -15,10 +15,16 @@
       "description": "Show the project resources in one place",
       "actions": [
         {
-          "icon": "VscAdd",
+          "icon": "VscNewFile",
           "key": "add-resources",
           "label": "Add new resource",
           "description": "Allow you to add pages, components or services"
+        },
+        {
+          "key": "add-folders",
+          "icon": "VscNewFolder",
+          "label": "Add new folder",
+          "description": "Allow you to add folders"
         }
       ],
       "tabs": [
