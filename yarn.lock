@@ -276,10 +276,10 @@ nanoid@^3.3.11:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.11.tgz#4f4f112cefbe303202f2199838128936266d185b"
   integrity sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==
 
-parsifly-extension-base@^1.2.9:
-  version "1.2.9"
-  resolved "https://registry.yarnpkg.com/parsifly-extension-base/-/parsifly-extension-base-1.2.9.tgz#80d9dcf12d19d1514299340c2f11e0ad6bc3bdde"
-  integrity sha512-wkVwdfuupK0a9bs2w6sMD4r14VnsysSucgm2aIRZ7IkwsPFWa3m8QPfG2tyOSVVpMHOqb2psFbEm8JBUiXWN4w==
+parsifly-extension-base@^1.2.10:
+  version "1.2.10"
+  resolved "https://registry.yarnpkg.com/parsifly-extension-base/-/parsifly-extension-base-1.2.10.tgz#73c08bffe412246256e1a19a88fabde652df4bf3"
+  integrity sha512-I6EhJpWloO6Xbio1HyvDCHqco/ScIW+2NXfByoYLeVTf1uSewESO07z5DV1oibcoLyjrD7KuB+UKBYwWUU4LJg==
   dependencies:
     comlink "^4.4.2"
 
