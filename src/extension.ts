@@ -84,14 +84,21 @@ new class Extension extends ExtensionBase {
             context.set('label', item.name);
             context.set('description', item.description || '');
 
+            const selectionIds = await this.application.selection.get();
+            context.select(selectionIds.includes(item.id));
+
+            const editionSub = this.application.edition.subscribe(key => context.edit(key === item.id));
             const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
-            const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
             const itemsSub = await ref.doc(item.id).collection('content').onValue(() => context.refetchChildren());
+            const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(item.id)));
+            const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
 
             context.onDidUnmount(async () => {
+              editionSub();
+              selectionSub();
               await nameSub.unsubscribe();
-              await descriptionSub.unsubscribe();
               await itemsSub.unsubscribe();
+              await descriptionSub.unsubscribe();
             });
           },
         })
@@ -127,10 +134,19 @@ new class Extension extends ExtensionBase {
           context.set('label', item.name);
           context.set('description', item.description || '');
 
+          const selectionIds = await this.application.selection.get();
+          const editionId = await this.application.edition.get();
+          context.select(selectionIds.includes(item.id));
+          context.edit(editionId === item.id);
+
+          const editionSub = this.application.edition.subscribe(key => context.edit(key === item.id));
           const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
+          const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(item.id)));
           const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
 
           context.onDidUnmount(async () => {
+            editionSub();
+            selectionSub();
             await nameSub.unsubscribe();
             await descriptionSub.unsubscribe();
           });
@@ -218,14 +234,21 @@ new class Extension extends ExtensionBase {
             context.set('label', item.name);
             context.set('description', item.description || '');
 
+            const selectionIds = await this.application.selection.get();
+            context.select(selectionIds.includes(item.id));
+
+            const editionSub = this.application.edition.subscribe(key => context.edit(key === item.id));
             const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
-            const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
             const itemsSub = await ref.doc(item.id).collection('content').onValue(() => context.refetchChildren());
+            const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(item.id)));
+            const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
 
             context.onDidUnmount(async () => {
+              editionSub();
+              selectionSub();
               await nameSub.unsubscribe();
-              await descriptionSub.unsubscribe();
               await itemsSub.unsubscribe();
+              await descriptionSub.unsubscribe();
             });
           },
         })
@@ -267,10 +290,19 @@ new class Extension extends ExtensionBase {
           context.set('label', item.name);
           context.set('description', item.description || '');
 
+          const selectionIds = await this.application.selection.get();
+          const editionId = await this.application.edition.get();
+          context.select(selectionIds.includes(item.id));
+          context.edit(editionId === item.id);
+
+          const editionSub = this.application.edition.subscribe(key => context.edit(key === item.id));
           const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
+          const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(item.id)));
           const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
 
           context.onDidUnmount(async () => {
+            editionSub();
+            selectionSub();
             await nameSub.unsubscribe();
             await descriptionSub.unsubscribe();
           });
@@ -358,14 +390,21 @@ new class Extension extends ExtensionBase {
             context.set('label', item.name);
             context.set('description', item.description || '');
 
+            const selectionIds = await this.application.selection.get();
+            context.select(selectionIds.includes(item.id));
+
+            const editionSub = this.application.edition.subscribe(key => context.edit(key === item.id));
             const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
-            const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
             const itemsSub = await ref.doc(item.id).collection('content').onValue(() => context.refetchChildren());
+            const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(item.id)));
+            const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
 
             context.onDidUnmount(async () => {
+              editionSub();
+              selectionSub();
               await nameSub.unsubscribe();
-              await descriptionSub.unsubscribe();
               await itemsSub.unsubscribe();
+              await descriptionSub.unsubscribe();
             });
           },
         })
@@ -401,10 +440,19 @@ new class Extension extends ExtensionBase {
           context.set('label', item.name);
           context.set('description', item.description || '');
 
+          const selectionIds = await this.application.selection.get();
+          const editionId = await this.application.edition.get();
+          context.select(selectionIds.includes(item.id));
+          context.edit(editionId === item.id);
+
+          const editionSub = this.application.edition.subscribe(key => context.edit(key === item.id));
           const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
+          const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(item.id)));
           const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
 
           context.onDidUnmount(async () => {
+            editionSub();
+            selectionSub();
             await nameSub.unsubscribe();
             await descriptionSub.unsubscribe();
           });
@@ -494,14 +542,19 @@ new class Extension extends ExtensionBase {
                   context.set('label', projectName);
                   context.set('description', projectDescription || '');
 
+                  const selectionIds = await this.application.selection.get();
+                  context.select(selectionIds.includes(projectId));
+
                   const nameSub = await ref.field('name').onValue(value => context.set('label', value));
-                  const descriptionSub = await ref.field('description').onValue(value => context.set('description', value || ''));
                   const itemsSub = await ref.collection('pages').onValue(() => context.refetchChildren());
+                  const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(projectId)));
+                  const descriptionSub = await ref.field('description').onValue(value => context.set('description', value || ''));
 
                   context.onDidUnmount(async () => {
+                    selectionSub();
                     await nameSub.unsubscribe();
-                    await descriptionSub.unsubscribe();
                     await itemsSub.unsubscribe();
+                    await descriptionSub.unsubscribe();
                   });
                 }
               })
@@ -588,14 +641,19 @@ new class Extension extends ExtensionBase {
                   context.set('label', projectName);
                   context.set('description', projectDescription || '');
 
+                  const selectionIds = await this.application.selection.get();
+                  context.select(selectionIds.includes(projectId));
+
                   const nameSub = await ref.field('name').onValue(value => context.set('label', value));
-                  const descriptionSub = await ref.field('description').onValue(value => context.set('description', value || ''));
                   const itemsSub = await ref.collection('components').onValue(() => context.refetchChildren());
+                  const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(projectId)));
+                  const descriptionSub = await ref.field('description').onValue(value => context.set('description', value || ''));
 
                   context.onDidUnmount(async () => {
+                    selectionSub();
                     await nameSub.unsubscribe();
-                    await descriptionSub.unsubscribe();
                     await itemsSub.unsubscribe();
+                    await descriptionSub.unsubscribe();
                   });
                 }
               })
@@ -691,17 +749,22 @@ new class Extension extends ExtensionBase {
                   context.set('label', projectName);
                   context.set('description', projectDescription || '');
 
+                  const selectionIds = await this.application.selection.get();
+                  context.select(selectionIds.includes(projectId));
+
                   const nameSub = await ref.field('name').onValue(value => context.set('label', value));
-                  const descriptionSub = await ref.field('description').onValue(value => context.set('description', value || ''));
                   const itemsSub = await ref.collection('pages').onValue(() => context.refetchChildren());
+                  const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(projectId)));
+                  const descriptionSub = await ref.field('description').onValue(value => context.set('description', value || ''));
 
                   context.onDidUnmount(async () => {
+                    selectionSub();
                     await nameSub.unsubscribe();
-                    await descriptionSub.unsubscribe();
                     await itemsSub.unsubscribe();
+                    await descriptionSub.unsubscribe();
                   });
-                }
-              })
+                },
+              }),
             ];
           },
         }),
