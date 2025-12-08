@@ -1,4 +1,4 @@
-import { ExtensionBase, ListProvider, IPage, IComponent, IService, IFolder, ContextMenuItem, ICollection, ListViewItem, View, PlatformAction } from 'parsifly-extension-base';
+import { ExtensionBase, ListProvider, IPage, IComponent, IService, IFolder, ContextMenuItem, ICollection, ListViewItem, View } from 'parsifly-extension-base';
 
 // Envs.DEBUG = true;
 
@@ -469,46 +469,6 @@ new class Extension extends ExtensionBase {
       title: "Resources",
       position: 'primary',
       description: "Show the project resources in one place",
-      getTabs: async (context) => {
-        return [
-          new PlatformAction({
-            key: 'tab-pages',
-            initialValue: {
-              label: "Pages",
-              icon: "VscWindow",
-              description: "Show all pages",
-              action: async () => {
-                this.currentTab = 'pages';
-                await context.refetchData();
-              },
-            },
-          }),
-          new PlatformAction({
-            key: 'tab-components',
-            initialValue: {
-              label: "Components",
-              icon: "VscRuby",
-              description: "Show all components",
-              action: async () => {
-                this.currentTab = 'components';
-                await context.refetchData();
-              },
-            },
-          }),
-          new PlatformAction({
-            key: 'tab-services',
-            initialValue: {
-              label: "Services",
-              icon: "VscSymbolMethod",
-              description: "Show all services",
-              action: async () => {
-                this.currentTab = 'services';
-                await context.refetchData();
-              },
-            },
-          }),
-        ];
-      },
       dataProvider: new ListProvider({
         key: 'data-provider',
         getItems: async () => {
@@ -518,258 +478,286 @@ new class Extension extends ExtensionBase {
           const projectName = await ref.field('name').value();
           const projectDescription = await ref.field('description').value();
 
-
-          if (this.currentTab === 'components') return [
-            new ListViewItem({
-              key: projectId,
-              initialValue: {
-                children: true,
-                label: projectName,
-                icon: 'VscRootFolderOpened',
-                description: projectDescription || '',
-                getItems: async () => {
-                  const items = await this.loadComponents(ref.collection('components'))
-                  return items;
-                },
-                onItemClick: async () => {
-                  await this.application.selection.select(projectId);
-                },
-                getContextMenuItems: async () => {
-                  return [
-                    new ContextMenuItem({
-                      label: 'New component',
-                      icon: 'VscNewFile',
-                      key: `new-component:${projectId}`,
-                      description: 'Add to this folder a new component',
-                      onClick: async () => {
-                        const name = await this.application.commands.editor.showQuickPick({
-                          title: 'Component name?',
-                          placeholder: 'Example: Component1',
-                          helpText: 'Type the name of the component.',
-                        });
-                        if (!name) return;
-
-                        await ref.collection('components').add({
-                          name: name,
-                          description: '',
-                          type: 'component',
-                          id: crypto.randomUUID(),
-                        });
-                      },
-                    }),
-                    new ContextMenuItem({
-                      label: 'New folder',
-                      icon: 'VscNewFolder',
-                      key: `new-folder:${projectId}`,
-                      description: 'Add to this folder a new folder',
-                      onClick: async () => {
-                        const name = await this.application.commands.editor.showQuickPick({
-                          title: 'Folder name',
-                          placeholder: 'Example: Folder1',
-                          helpText: 'Type the name of the folder.',
-                        });
-                        if (!name) return;
-
-                        await ref.collection('components').add({
-                          name: name,
-                          content: [],
-                          type: 'folder',
-                          description: '',
-                          id: crypto.randomUUID(),
-                        });
-                      },
-                    }),
-                  ];
-                }
-              },
-              //Será executado quando o componente for exibido na tela
-              onDidMount: async (context) => {
-                const selectionIds = await this.application.selection.get();
-                context.select(selectionIds.includes(projectId));
-
-                const nameSub = await ref.field('name').onValue(value => context.set('label', value));
-                const itemsSub = await ref.collection('components').onValue(() => context.refetchChildren());
-                const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(projectId)));
-                const descriptionSub = await ref.field('description').onValue(value => context.set('description', value || ''));
-
-                context.onDidUnmount(async () => {
-                  selectionSub();
-                  await nameSub.unsubscribe();
-                  await itemsSub.unsubscribe();
-                  await descriptionSub.unsubscribe();
-                });
-              }
-            })
-          ];
-
-          if (this.currentTab === 'services') return [
-            new ListViewItem({
-              key: projectId,
-              initialValue: {
-                children: true,
-                label: projectName,
-                icon: 'VscRootFolderOpened',
-                description: projectDescription || '',
-                getItems: async () => {
-                  const items = await this.loadServices(ref.collection('services'))
-                  return items;
-                },
-                onItemClick: async () => {
-                  await this.application.selection.select(projectId);
-                },
-                getContextMenuItems: async () => {
-                  return [
-                    new ContextMenuItem({
-                      label: 'Delete',
-                      icon: 'VscTrash',
-                      key: `delete:${projectId}`,
-                      description: 'This action is irreversible',
-                      onClick: async () => {
-                        await ref.delete()
-                      },
-                    }),
-                    new ContextMenuItem({
-                      label: 'New service',
-                      icon: 'VscNewFile',
-                      key: `new-service:${projectId}`,
-                      description: 'Add to this folder a new service',
-                      onClick: async () => {
-                        const name = await this.application.commands.editor.showQuickPick({
-                          title: 'Service name?',
-                          placeholder: 'Example: Service1',
-                          helpText: 'Type the name of the service.',
-                        });
-                        if (!name) return;
-
-                        await ref.collection('services').add({
-                          name: name,
-                          description: '',
-                          type: 'service',
-                          id: crypto.randomUUID(),
-                        });
-                      },
-                    }),
-                    new ContextMenuItem({
-                      label: 'New folder',
-                      icon: 'VscNewFolder',
-                      key: `new-folder:${projectId}`,
-                      description: 'Add to this folder a new folder',
-                      onClick: async () => {
-                        const name = await this.application.commands.editor.showQuickPick({
-                          title: 'Folder name',
-                          placeholder: 'Example: Folder1',
-                          helpText: 'Type the name of the folder.',
-                        });
-                        if (!name) return;
-
-                        await ref.collection('services').add({
-                          name: name,
-                          content: [],
-                          type: 'folder',
-                          description: '',
-                          id: crypto.randomUUID(),
-                        });
-                      },
-                    }),
-                  ];
-                }
-              },
-              //Será executado quando o componente for exibido na tela
-              onDidMount: async (context) => {
-                const selectionIds = await this.application.selection.get();
-                context.select(selectionIds.includes(projectId));
-
-                const nameSub = await ref.field('name').onValue(value => context.set('label', value));
-                const itemsSub = await ref.collection('pages').onValue(() => context.refetchChildren());
-                const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(projectId)));
-                const descriptionSub = await ref.field('description').onValue(value => context.set('description', value || ''));
-
-                context.onDidUnmount(async () => {
-                  selectionSub();
-                  await nameSub.unsubscribe();
-                  await itemsSub.unsubscribe();
-                  await descriptionSub.unsubscribe();
-                });
-              },
-            }),
-          ];
-
           return [
             new ListViewItem({
               key: projectId,
               initialValue: {
+                opened: true,
                 children: true,
                 label: projectName,
                 icon: 'VscRootFolderOpened',
                 description: projectDescription || '',
-                getItems: async () => {
-                  const items = await this.loadPages(ref.collection('pages'))
-                  return items;
-                },
                 onItemClick: async () => {
                   await this.application.selection.select(projectId);
                 },
-                getContextMenuItems: async () => {
-                  return [
-                    new ContextMenuItem({
-                      label: 'New page',
-                      icon: 'VscNewFile',
-                      key: `new-page:${projectId}`,
-                      description: 'Add to this folder a new page',
-                      onClick: async () => {
-                        const name = await this.application.commands.editor.showQuickPick({
-                          title: 'Page name?',
-                          placeholder: 'Example: Page1',
-                          helpText: 'Type the name of the page.',
-                        });
-                        if (!name) return;
-
-                        await ref.collection('pages').add({
-                          name: name,
-                          description: '',
-                          type: 'page',
-                          id: crypto.randomUUID(),
-                        });
+                getItems: async () => [
+                  new ListViewItem({
+                    key: 'pages-group',
+                    initialValue: {
+                      opened: true,
+                      label: 'Pages',
+                      children: true,
+                      disableSelect: true,
+                      icon: 'VscWindow',
+                      getItems: async () => {
+                        const items = await this.loadPages(ref.collection('pages'))
+                        return items;
                       },
-                    }),
-                    new ContextMenuItem({
-                      label: 'New folder',
-                      icon: 'VscNewFolder',
-                      key: `new-folder:${projectId}`,
-                      description: 'Add to this folder a new folder',
-                      onClick: async () => {
-                        const name = await this.application.commands.editor.showQuickPick({
-                          title: 'Folder name',
-                          placeholder: 'Example: Folder1',
-                          helpText: 'Type the name of the folder.',
-                        });
-                        if (!name) return;
+                      getContextMenuItems: async () => {
+                        return [
+                          new ContextMenuItem({
+                            label: 'New page',
+                            icon: 'VscNewFile',
+                            key: `new-page:${projectId}`,
+                            description: 'Add to this folder a new page',
+                            onClick: async () => {
+                              const name = await this.application.commands.editor.showQuickPick({
+                                title: 'Page name?',
+                                placeholder: 'Example: Page1',
+                                helpText: 'Type the name of the page.',
+                              });
+                              if (!name) return;
 
-                        await ref.collection('pages').add({
-                          name: name,
-                          content: [],
-                          type: 'folder',
-                          description: '',
-                          id: crypto.randomUUID(),
-                        });
-                      },
-                    }),
-                  ];
-                }
+                              await ref.collection('pages').add({
+                                name: name,
+                                description: '',
+                                type: 'page',
+                                id: crypto.randomUUID(),
+                              });
+                            },
+                          }),
+                          new ContextMenuItem({
+                            label: 'New folder',
+                            icon: 'VscNewFolder',
+                            key: `new-folder:${projectId}`,
+                            description: 'Add to this folder a new folder',
+                            onClick: async () => {
+                              const name = await this.application.commands.editor.showQuickPick({
+                                title: 'Folder name',
+                                placeholder: 'Example: Folder1',
+                                helpText: 'Type the name of the folder.',
+                              });
+                              if (!name) return;
+
+                              await ref.collection('pages').add({
+                                name: name,
+                                content: [],
+                                type: 'folder',
+                                description: '',
+                                id: crypto.randomUUID(),
+                              });
+                            },
+                          }),
+                        ];
+                      }
+                    },
+                    onDidMount: async (context) => {
+                      const itemsSub = await ref.collection('pages').onValue(() => context.refetchChildren());
+
+                      context.onDidUnmount(async () => {
+                        await itemsSub.unsubscribe();
+                      });
+                    }
+                  }),
+                  new ListViewItem({
+                    key: 'shared-group',
+                    initialValue: {
+                      opened: true,
+                      children: true,
+                      label: 'Shared',
+                      disableSelect: true,
+                      icon: 'VscFileSubmodule',
+                      getItems: async () => [
+                        new ListViewItem({
+                          key: 'components-group',
+                          initialValue: {
+                            children: true,
+                            icon: 'VscRuby',
+                            label: 'Components',
+                            disableSelect: true,
+                            getItems: async () => {
+                              const items = await this.loadComponents(ref.collection('components'))
+                              return items;
+                            },
+                            getContextMenuItems: async () => {
+                              return [
+                                new ContextMenuItem({
+                                  label: 'New component',
+                                  icon: 'VscNewFile',
+                                  key: `new-component:${projectId}`,
+                                  description: 'Add to this folder a new component',
+                                  onClick: async () => {
+                                    const name = await this.application.commands.editor.showQuickPick({
+                                      title: 'Component name?',
+                                      placeholder: 'Example: Component1',
+                                      helpText: 'Type the name of the component.',
+                                    });
+                                    if (!name) return;
+
+                                    await ref.collection('components').add({
+                                      name: name,
+                                      description: '',
+                                      type: 'component',
+                                      id: crypto.randomUUID(),
+                                    });
+                                  },
+                                }),
+                                new ContextMenuItem({
+                                  label: 'New folder',
+                                  icon: 'VscNewFolder',
+                                  key: `new-folder:${projectId}`,
+                                  description: 'Add to this folder a new folder',
+                                  onClick: async () => {
+                                    const name = await this.application.commands.editor.showQuickPick({
+                                      title: 'Folder name',
+                                      placeholder: 'Example: Folder1',
+                                      helpText: 'Type the name of the folder.',
+                                    });
+                                    if (!name) return;
+
+                                    await ref.collection('components').add({
+                                      name: name,
+                                      content: [],
+                                      type: 'folder',
+                                      description: '',
+                                      id: crypto.randomUUID(),
+                                    });
+                                  },
+                                }),
+                              ];
+                            }
+                          },
+                          onDidMount: async (context) => {
+                            const itemsSub = await ref.collection('components').onValue(() => context.refetchChildren());
+
+                            context.onDidUnmount(async () => {
+                              await itemsSub.unsubscribe();
+                            });
+                          },
+                        }),
+                        new ListViewItem({
+                          key: 'services-group',
+                          initialValue: {
+                            children: true,
+                            label: 'Services',
+                            disableSelect: true,
+                            icon: 'VscSymbolMethod',
+                            getItems: async () => {
+                              const items = await this.loadServices(ref.collection('services'))
+                              return items;
+                            },
+                            getContextMenuItems: async () => {
+                              return [
+                                new ContextMenuItem({
+                                  label: 'New service',
+                                  icon: 'VscNewFile',
+                                  key: `new-service:${projectId}`,
+                                  description: 'Add to this folder a new service',
+                                  onClick: async () => {
+                                    const name = await this.application.commands.editor.showQuickPick({
+                                      title: 'Service name?',
+                                      placeholder: 'Example: Service1',
+                                      helpText: 'Type the name of the service.',
+                                    });
+                                    if (!name) return;
+
+                                    await ref.collection('services').add({
+                                      name: name,
+                                      description: '',
+                                      type: 'service',
+                                      id: crypto.randomUUID(),
+                                    });
+                                  },
+                                }),
+                                new ContextMenuItem({
+                                  label: 'New folder',
+                                  icon: 'VscNewFolder',
+                                  key: `new-folder:${projectId}`,
+                                  description: 'Add to this folder a new folder',
+                                  onClick: async () => {
+                                    const name = await this.application.commands.editor.showQuickPick({
+                                      title: 'Folder name',
+                                      placeholder: 'Example: Folder1',
+                                      helpText: 'Type the name of the folder.',
+                                    });
+                                    if (!name) return;
+
+                                    await ref.collection('services').add({
+                                      name: name,
+                                      content: [],
+                                      type: 'folder',
+                                      description: '',
+                                      id: crypto.randomUUID(),
+                                    });
+                                  },
+                                }),
+                              ];
+                            }
+                          },
+                          onDidMount: async (context) => {
+                            const itemsSub = await ref.collection('pages').onValue(() => context.refetchChildren());
+
+                            context.onDidUnmount(async () => {
+                              await itemsSub.unsubscribe();
+                            });
+                          },
+                        }),
+                        new ListViewItem({
+                          key: 'structures-group',
+                          initialValue: {
+                            children: true,
+                            label: 'Structures',
+                            disableSelect: true,
+                            getItems: async () => [],
+                            icon: 'VscSymbolInterface',
+                          },
+                        }),
+                        new ListViewItem({
+                          key: 'dependencies-group',
+                          initialValue: {
+                            children: true,
+                            disableSelect: true,
+                            label: 'Dependencies',
+                            icon: 'VscDebugDisconnect',
+                            getItems: async () => [],
+                          },
+                        }),
+                        new ListViewItem({
+                          key: 'integrations-group',
+                          initialValue: {
+                            children: true,
+                            icon: 'VscCode',
+                            disableSelect: true,
+                            label: 'Integrations',
+                            getItems: async () => [],
+                          },
+                        }),
+                        new ListViewItem({
+                          key: 'assets-group',
+                          initialValue: {
+                            children: true,
+                            label: 'Assets',
+                            icon: 'VscAttach',
+                            disableSelect: true,
+                            getItems: async () => [],
+                          },
+                        }),
+                      ],
+                    },
+                  })
+                ],
               },
               onDidMount: async (context) => {
                 const selectionIds = await this.application.selection.get();
                 context.select(selectionIds.includes(projectId));
 
                 const nameSub = await ref.field('name').onValue(value => context.set('label', value));
-                const itemsSub = await ref.collection('pages').onValue(() => context.refetchChildren());
                 const selectionSub = this.application.selection.subscribe(key => context.select(key.includes(projectId)));
                 const descriptionSub = await ref.field('description').onValue(value => context.set('description', value || ''));
 
                 context.onDidUnmount(async () => {
                   selectionSub();
                   await nameSub.unsubscribe();
-                  await itemsSub.unsubscribe();
                   await descriptionSub.unsubscribe();
                 });
               }
