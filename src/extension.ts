@@ -15,13 +15,13 @@ new class Extension extends ExtensionBase {
           initialValue: {
             children: true,
             label: item.name,
-            icon: 'VscFolder',
+            icon: { name: 'VscFolder' },
             getContextMenuItems: async () => {
               return [
                 new ContextMenuItem({
                   label: 'Delete',
-                  icon: 'VscTrash',
                   key: `delete:${item.id}`,
+                  icon: { name: 'VscTrash' },
                   description: 'This action is irreversible',
                   onClick: async () => {
                     await ref.doc(item.id).delete()
@@ -29,8 +29,8 @@ new class Extension extends ExtensionBase {
                 }),
                 new ContextMenuItem({
                   label: 'New page',
-                  icon: 'VscNewFile',
                   key: `new-page:${item.id}`,
+                  icon: { name: 'VscNewFile' },
                   description: 'Add to this folder a new page',
                   onClick: async () => {
                     const name = await this.application.commands.editor.showQuickPick({
@@ -50,8 +50,8 @@ new class Extension extends ExtensionBase {
                 }),
                 new ContextMenuItem({
                   label: 'New folder',
-                  icon: 'VscNewFolder',
                   key: `new-folder:${item.id}`,
+                  icon: { name: 'VscNewFolder' },
                   description: 'Add to this folder a new folder',
                   onClick: async () => {
                     const name = await this.application.commands.editor.showQuickPick({
@@ -109,7 +109,7 @@ new class Extension extends ExtensionBase {
         initialValue: {
           children: false,
           label: item.name,
-          icon: 'VscWindow',
+          icon: { name: 'VscWindow' },
           onItemClick: async () => {
             await this.application.selection.select(item.id);
           },
@@ -120,8 +120,8 @@ new class Extension extends ExtensionBase {
             return [
               new ContextMenuItem({
                 label: 'Delete',
-                icon: 'VscTrash',
                 key: `delete:${item.id}`,
+                icon: { name: 'VscTrash' },
                 description: 'This action is irreversible',
                 onClick: async () => {
                   await ref.doc(item.id).delete()
@@ -165,13 +165,13 @@ new class Extension extends ExtensionBase {
           initialValue: {
             children: true,
             label: item.name,
-            icon: 'VscFolder',
+            icon: { name: 'VscFolder' },
             getContextMenuItems: async () => {
               return [
                 new ContextMenuItem({
                   label: 'Delete',
-                  icon: 'VscTrash',
                   key: `delete:${item.id}`,
+                  icon: { name: 'VscTrash' },
                   description: 'This action is irreversible',
                   onClick: async () => {
                     await ref.doc(item.id).delete()
@@ -179,7 +179,7 @@ new class Extension extends ExtensionBase {
                 }),
                 new ContextMenuItem({
                   label: 'New component',
-                  icon: 'VscNewFile',
+                  icon: { name: 'VscNewFile' },
                   key: `new-component:${item.id}`,
                   description: 'Add to this folder a new component',
                   onClick: async () => {
@@ -200,8 +200,8 @@ new class Extension extends ExtensionBase {
                 }),
                 new ContextMenuItem({
                   label: 'New folder',
-                  icon: 'VscNewFolder',
                   key: `new-folder:${item.id}`,
+                  icon: { name: 'VscNewFolder' },
                   description: 'Add to this folder a new folder',
                   onClick: async () => {
                     const name = await this.application.commands.editor.showQuickPick({
@@ -260,7 +260,7 @@ new class Extension extends ExtensionBase {
           children: false,
           draggable: true,
           label: item.name,
-          icon: 'VscRuby',
+          icon: { name: 'VscRuby' },
           draggableData: {
             id: item.id,
             type: item.type,
@@ -276,8 +276,8 @@ new class Extension extends ExtensionBase {
             return [
               new ContextMenuItem({
                 label: 'Delete',
-                icon: 'VscTrash',
                 key: `delete:${item.id}`,
+                icon: { name: 'VscTrash' },
                 description: 'This action is irreversible',
                 onClick: async () => {
                   await ref.doc(item.id).delete()
@@ -321,13 +321,13 @@ new class Extension extends ExtensionBase {
           initialValue: {
             children: true,
             label: item.name,
-            icon: 'VscFolder',
+            icon: { name: 'VscFolder' },
             getContextMenuItems: async () => {
               return [
                 new ContextMenuItem({
                   label: 'Delete',
-                  icon: 'VscTrash',
                   key: `delete:${item.id}`,
+                  icon: { name: 'VscTrash' },
                   description: 'This action is irreversible',
                   onClick: async () => {
                     await ref.doc(item.id).delete()
@@ -335,7 +335,7 @@ new class Extension extends ExtensionBase {
                 }),
                 new ContextMenuItem({
                   label: 'New service',
-                  icon: 'VscNewFile',
+                  icon: { name: 'VscNewFile' },
                   key: `new-service:${item.id}`,
                   description: 'Add to this folder a new service',
                   onClick: async () => {
@@ -356,8 +356,8 @@ new class Extension extends ExtensionBase {
                 }),
                 new ContextMenuItem({
                   label: 'New folder',
-                  icon: 'VscNewFolder',
                   key: `new-folder:${item.id}`,
+                  icon: { name: 'VscNewFolder' },
                   description: 'Add to this folder a new folder',
                   onClick: async () => {
                     const name = await this.application.commands.editor.showQuickPick({
@@ -415,7 +415,7 @@ new class Extension extends ExtensionBase {
         initialValue: {
           children: false,
           label: item.name,
-          icon: 'VscSymbolMethod',
+          icon: { name: 'VscSymbolMethod' },
           onItemClick: async () => {
             await this.application.selection.select(item.id);
           },
@@ -426,8 +426,8 @@ new class Extension extends ExtensionBase {
             return [
               new ContextMenuItem({
                 label: 'Delete',
-                icon: 'VscTrash',
                 key: `delete:${item.id}`,
+                icon: { name: 'VscTrash' },
                 description: 'This action is irreversible',
                 onClick: async () => {
                   await ref.doc(item.id).delete()
@@ -465,9 +465,9 @@ new class Extension extends ExtensionBase {
   resourcesListView = new View({
     key: 'resources-side-bar',
     initialValue: {
-      icon: "VscFiles",
       title: "Resources",
       position: 'primary',
+      icon: { name: "VscFiles" },
       description: "Show the project resources in one place",
       dataProvider: new ListProvider({
         key: 'data-provider',
@@ -485,7 +485,7 @@ new class Extension extends ExtensionBase {
                 opened: true,
                 children: true,
                 label: projectName,
-                icon: 'VscRootFolderOpened',
+                icon: { name: 'VscRootFolderOpened' },
                 description: projectDescription || '',
                 onItemClick: async () => {
                   await this.application.selection.select(projectId);
@@ -498,7 +498,7 @@ new class Extension extends ExtensionBase {
                       label: 'Pages',
                       children: true,
                       disableSelect: true,
-                      icon: 'VscWindow',
+                      icon: { name: 'VscWindow' },
                       getItems: async () => {
                         const items = await this.loadPages(ref.collection('pages'))
                         return items;
@@ -507,7 +507,7 @@ new class Extension extends ExtensionBase {
                         return [
                           new ContextMenuItem({
                             label: 'New page',
-                            icon: 'VscNewFile',
+                            icon: { name: 'VscNewFile' },
                             key: `new-page:${projectId}`,
                             description: 'Add to this folder a new page',
                             onClick: async () => {
@@ -528,7 +528,7 @@ new class Extension extends ExtensionBase {
                           }),
                           new ContextMenuItem({
                             label: 'New folder',
-                            icon: 'VscNewFolder',
+                            icon: { name: 'VscNewFolder' },
                             key: `new-folder:${projectId}`,
                             description: 'Add to this folder a new folder',
                             onClick: async () => {
@@ -566,15 +566,15 @@ new class Extension extends ExtensionBase {
                       children: true,
                       label: 'Shared',
                       disableSelect: true,
-                      icon: 'VscFileSubmodule',
+                      icon: { name: 'VscFileSubmodule' },
                       getItems: async () => [
                         new ListViewItem({
                           key: 'components-group',
                           initialValue: {
                             children: true,
-                            icon: 'VscRuby',
                             label: 'Components',
                             disableSelect: true,
+                            icon: { name: 'VscRuby' },
                             getItems: async () => {
                               const items = await this.loadComponents(ref.collection('components'))
                               return items;
@@ -583,7 +583,7 @@ new class Extension extends ExtensionBase {
                               return [
                                 new ContextMenuItem({
                                   label: 'New component',
-                                  icon: 'VscNewFile',
+                                  icon: { name: 'VscNewFile' },
                                   key: `new-component:${projectId}`,
                                   description: 'Add to this folder a new component',
                                   onClick: async () => {
@@ -604,7 +604,7 @@ new class Extension extends ExtensionBase {
                                 }),
                                 new ContextMenuItem({
                                   label: 'New folder',
-                                  icon: 'VscNewFolder',
+                                  icon: { name: 'VscNewFolder' },
                                   key: `new-folder:${projectId}`,
                                   description: 'Add to this folder a new folder',
                                   onClick: async () => {
@@ -641,7 +641,7 @@ new class Extension extends ExtensionBase {
                             children: true,
                             label: 'Services',
                             disableSelect: true,
-                            icon: 'VscSymbolMethod',
+                            icon: { name: 'VscSymbolMethod' },
                             getItems: async () => {
                               const items = await this.loadServices(ref.collection('services'))
                               return items;
@@ -650,7 +650,7 @@ new class Extension extends ExtensionBase {
                               return [
                                 new ContextMenuItem({
                                   label: 'New service',
-                                  icon: 'VscNewFile',
+                                  icon: { name: 'VscNewFile' },
                                   key: `new-service:${projectId}`,
                                   description: 'Add to this folder a new service',
                                   onClick: async () => {
@@ -671,7 +671,7 @@ new class Extension extends ExtensionBase {
                                 }),
                                 new ContextMenuItem({
                                   label: 'New folder',
-                                  icon: 'VscNewFolder',
+                                  icon: { name: 'VscNewFolder' },
                                   key: `new-folder:${projectId}`,
                                   description: 'Add to this folder a new folder',
                                   onClick: async () => {
@@ -709,7 +709,7 @@ new class Extension extends ExtensionBase {
                             label: 'Structures',
                             disableSelect: true,
                             getItems: async () => [],
-                            icon: 'VscSymbolInterface',
+                            icon: { name: 'VscSymbolInterface' },
                           },
                         }),
                         new ListViewItem({
@@ -718,7 +718,7 @@ new class Extension extends ExtensionBase {
                             children: true,
                             disableSelect: true,
                             label: 'Dependencies',
-                            icon: 'VscDebugDisconnect',
+                            icon: { name: 'VscDebugDisconnect' },
                             getItems: async () => [],
                           },
                         }),
@@ -726,10 +726,10 @@ new class Extension extends ExtensionBase {
                           key: 'integrations-group',
                           initialValue: {
                             children: true,
-                            icon: 'VscCode',
                             disableSelect: true,
                             label: 'Integrations',
                             getItems: async () => [],
+                            icon: { name: 'VscCode' },
                           },
                         }),
                         new ListViewItem({
@@ -737,9 +737,9 @@ new class Extension extends ExtensionBase {
                           initialValue: {
                             children: true,
                             label: 'Assets',
-                            icon: 'VscAttach',
                             disableSelect: true,
                             getItems: async () => [],
+                            icon: { name: 'VscAttach' },
                           },
                         }),
                       ],
