@@ -1,4 +1,4 @@
-import { ExtensionBase, ListProvider, IPage, IComponent, IService, IFolder, ContextMenuItem, ICollection, ListViewItem, View } from 'parsifly-extension-base';
+import { ExtensionBase, ListProvider, IPage, IComponent, IAction, IFolder, ContextMenuItem, ICollection, ListViewItem, View } from 'parsifly-extension-base';
 
 // Envs.DEBUG = true;
 
@@ -311,7 +311,7 @@ new class Extension extends ExtensionBase {
     })
   }
 
-  async loadServices(ref: ICollection<IService | IFolder<IService>>): Promise<ListViewItem[]> {
+  async loadActions(ref: ICollection<IAction | IFolder<IAction>>): Promise<ListViewItem[]> {
     const items = await ref.value();
 
     return items.map(item => {
@@ -334,22 +334,22 @@ new class Extension extends ExtensionBase {
                   },
                 }),
                 new ContextMenuItem({
-                  label: 'New service',
+                  label: 'New action',
                   icon: { name: 'VscNewFile' },
-                  key: `new-service:${item.id}`,
-                  description: 'Add to this folder a new service',
+                  key: `new-action:${item.id}`,
+                  description: 'Add to this folder a new action',
                   onClick: async () => {
                     const name = await this.application.commands.editor.showQuickPick({
-                      title: 'Service name?',
-                      placeholder: 'Example: Service1',
-                      helpText: 'Type the name of the service.',
+                      title: 'Action name?',
+                      placeholder: 'Example: Action1',
+                      helpText: 'Type the name of the action.',
                     });
                     if (!name) return;
 
                     await ref.doc(item.id).collection('content').add({
                       name: name,
                       description: '',
-                      type: 'service',
+                      type: 'action',
                       id: crypto.randomUUID(),
                     });
                   },
@@ -379,7 +379,7 @@ new class Extension extends ExtensionBase {
               ];
             },
             getItems: async () => {
-              const items = await this.loadServices(ref.doc(item.id).collection('content'))
+              const items = await this.loadActions(ref.doc(item.id).collection('content'))
               return items
             },
             onItemClick: async () => {
@@ -636,35 +636,35 @@ new class Extension extends ExtensionBase {
                           },
                         }),
                         new ListViewItem({
-                          key: 'services-group',
+                          key: 'actions-group',
                           initialValue: {
                             children: true,
-                            label: 'Services',
+                            label: 'Actions',
                             disableSelect: true,
                             icon: { name: 'VscSymbolMethod' },
                             getItems: async () => {
-                              const items = await this.loadServices(ref.collection('services'))
+                              const items = await this.loadActions(ref.collection('actions'))
                               return items;
                             },
                             getContextMenuItems: async () => {
                               return [
                                 new ContextMenuItem({
-                                  label: 'New service',
+                                  label: 'New action',
                                   icon: { name: 'VscNewFile' },
-                                  key: `new-service:${projectId}`,
-                                  description: 'Add to this folder a new service',
+                                  key: `new-action:${projectId}`,
+                                  description: 'Add to this folder a new action',
                                   onClick: async () => {
                                     const name = await this.application.commands.editor.showQuickPick({
-                                      title: 'Service name?',
-                                      placeholder: 'Example: Service1',
-                                      helpText: 'Type the name of the service.',
+                                      title: 'Action name?',
+                                      placeholder: 'Example: Action1',
+                                      helpText: 'Type the name of the action.',
                                     });
                                     if (!name) return;
 
-                                    await ref.collection('services').add({
+                                    await ref.collection('actions').add({
                                       name: name,
                                       description: '',
-                                      type: 'service',
+                                      type: 'action',
                                       id: crypto.randomUUID(),
                                     });
                                   },
@@ -682,7 +682,7 @@ new class Extension extends ExtensionBase {
                                     });
                                     if (!name) return;
 
-                                    await ref.collection('services').add({
+                                    await ref.collection('actions').add({
                                       name: name,
                                       content: [],
                                       type: 'folder',
@@ -703,6 +703,26 @@ new class Extension extends ExtensionBase {
                           },
                         }),
                         new ListViewItem({
+                          key: 'variables-group',
+                          initialValue: {
+                            children: true,
+                            label: 'Variables',
+                            disableSelect: true,
+                            getItems: async () => [],
+                            icon: { name: 'VscSymbolVariable' },
+                          },
+                        }),
+                        new ListViewItem({
+                          key: 'integrations-group',
+                          initialValue: {
+                            children: true,
+                            disableSelect: true,
+                            label: 'Integrations',
+                            getItems: async () => [],
+                            icon: { name: 'VscJson' },
+                          },
+                        }),
+                        new ListViewItem({
                           key: 'structures-group',
                           initialValue: {
                             children: true,
@@ -713,26 +733,6 @@ new class Extension extends ExtensionBase {
                           },
                         }),
                         new ListViewItem({
-                          key: 'dependencies-group',
-                          initialValue: {
-                            children: true,
-                            disableSelect: true,
-                            label: 'Dependencies',
-                            icon: { name: 'VscDebugDisconnect' },
-                            getItems: async () => [],
-                          },
-                        }),
-                        new ListViewItem({
-                          key: 'integrations-group',
-                          initialValue: {
-                            children: true,
-                            disableSelect: true,
-                            label: 'Integrations',
-                            getItems: async () => [],
-                            icon: { name: 'VscCode' },
-                          },
-                        }),
-                        new ListViewItem({
                           key: 'assets-group',
                           initialValue: {
                             children: true,
@@ -740,6 +740,16 @@ new class Extension extends ExtensionBase {
                             disableSelect: true,
                             getItems: async () => [],
                             icon: { name: 'VscAttach' },
+                          },
+                        }),
+                        new ListViewItem({
+                          key: 'dependencies-group',
+                          initialValue: {
+                            children: true,
+                            disableSelect: true,
+                            label: 'Dependencies',
+                            icon: { name: 'VscDebugDisconnect' },
+                            getItems: async () => [],
                           },
                         }),
                       ],
