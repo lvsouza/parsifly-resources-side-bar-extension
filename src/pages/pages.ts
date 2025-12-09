@@ -12,7 +12,7 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
         initialValue: {
           children: true,
           label: item.name,
-          icon: { name: 'VscFolder' },
+          icon: { path: 'folder-page.svg' },
           getContextMenuItems: async () => {
             return [
               new ContextMenuItem({
@@ -106,7 +106,7 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
       initialValue: {
         children: false,
         label: item.name,
-        icon: { name: 'VscWindow' },
+        icon: { path: 'page.svg' },
         onItemClick: async () => {
           await application.selection.select(item.id);
         },
@@ -157,10 +157,11 @@ export const loadPagesFolder = (application: ExtensionBase['application'], ref: 
   return new ListViewItem({
     key: 'pages-group',
     initialValue: {
+      opened: true,
       children: true,
       label: 'Pages',
       disableSelect: true,
-      icon: { name: 'VscWindow' },
+      icon: { path: 'folder-page.svg' },
       getItems: async () => {
         const items = await loadPages(application, ref.collection('pages'))
         return items;
