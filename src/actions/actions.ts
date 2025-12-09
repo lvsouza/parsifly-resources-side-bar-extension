@@ -10,20 +10,11 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
       return new ListViewItem({
         key: item.id,
         initialValue: {
-          children: false,
+          children: true,
           label: item.name,
           icon: { name: 'VscFolder' },
           getContextMenuItems: async (context) => {
             return [
-              new ContextMenuItem({
-                label: 'Delete',
-                key: `delete:${item.id}`,
-                icon: { name: 'VscTrash' },
-                description: 'This action is irreversible',
-                onClick: async () => {
-                  await ref.doc(item.id).delete()
-                },
-              }),
               new ContextMenuItem({
                 label: 'New action',
                 icon: { name: 'VscNewFile' },
@@ -69,6 +60,15 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
                     description: '',
                     id: crypto.randomUUID(),
                   });
+                },
+              }),
+              new ContextMenuItem({
+                label: 'Delete',
+                key: `delete:${item.id}`,
+                icon: { name: 'VscTrash' },
+                description: 'This action is irreversible',
+                onClick: async () => {
+                  await ref.doc(item.id).delete()
                 },
               }),
             ];
@@ -162,7 +162,7 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
   return new ListViewItem({
     key: 'actions-group',
     initialValue: {
-      children: false,
+      children: true,
       label: 'Actions',
       disableSelect: true,
       icon: { name: 'VscSymbolMethod' },

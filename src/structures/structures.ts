@@ -17,6 +17,7 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
         getItems: async (context) => {
           const items = await loadStructureAttributes(application, ref.doc(item.id).collection('attributes'))
           context.set('children', items.length > 0);
+          context.set('icon', items.length > 0 ? { path: 'substructure.svg' } : { path: 'structure-attribute.svg' });
           return items
         },
         getContextMenuItems: async (context) => {
@@ -156,6 +157,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
           getItems: async (context) => {
             const items = await loadStructures(application, ref.doc(item.id).collection('content'));
             context.set('children', items.length > 0);
+            context.set('icon', items.length > 0 ? { path: 'substructure.svg' } : { path: 'structure-attribute.svg' });
             return items
           },
         },

@@ -10,20 +10,11 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
       return new ListViewItem({
         key: item.id,
         initialValue: {
-          children: false,
+          children: true,
           label: item.name,
           icon: { name: 'VscFolder' },
           getContextMenuItems: async (context) => {
             return [
-              new ContextMenuItem({
-                label: 'Delete',
-                key: `delete:${item.id}`,
-                icon: { name: 'VscTrash' },
-                description: 'This action is irreversible',
-                onClick: async () => {
-                  await ref.doc(item.id).delete()
-                },
-              }),
               new ContextMenuItem({
                 label: 'New component',
                 icon: { name: 'VscNewFile' },
@@ -69,6 +60,15 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
                     description: '',
                     id: crypto.randomUUID(),
                   });
+                },
+              }),
+              new ContextMenuItem({
+                label: 'Delete',
+                key: `delete:${item.id}`,
+                icon: { name: 'VscTrash' },
+                description: 'This action is irreversible',
+                onClick: async () => {
+                  await ref.doc(item.id).delete()
                 },
               }),
             ];
@@ -162,7 +162,7 @@ export const loadComponentsFolder = (application: ExtensionBase['application'], 
   return new ListViewItem({
     key: 'components-group',
     initialValue: {
-      children: false,
+      children: true,
       label: 'Components',
       disableSelect: true,
       icon: { name: 'VscRuby' },

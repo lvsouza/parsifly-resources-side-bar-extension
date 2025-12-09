@@ -10,20 +10,11 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
       return new ListViewItem({
         key: item.id,
         initialValue: {
-          children: false,
+          children: true,
           label: item.name,
           icon: { path: 'folder-page.svg' },
           getContextMenuItems: async (context) => {
             return [
-              new ContextMenuItem({
-                label: 'Delete',
-                key: `delete:${item.id}`,
-                icon: { name: 'VscTrash' },
-                description: 'This action is irreversible',
-                onClick: async () => {
-                  await ref.doc(item.id).delete()
-                },
-              }),
               new ContextMenuItem({
                 label: 'New page',
                 icon: { name: 'VscNewFile' },
@@ -71,12 +62,21 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
                   });
                 },
               }),
+              new ContextMenuItem({
+                label: 'Delete',
+                key: `delete:${item.id}`,
+                icon: { name: 'VscTrash' },
+                description: 'This action is irreversible',
+                onClick: async () => {
+                  await ref.doc(item.id).delete()
+                },
+              }),
             ];
           },
           getItems: async (context) => {
             const items = await loadPages(application, ref.doc(item.id).collection('content'));
             context.set('children', items.length > 0);
-            return items
+            return items;
           },
           onItemClick: async () => {
             await application.selection.select(item.id);
@@ -164,7 +164,7 @@ export const loadPagesFolder = (application: ExtensionBase['application'], ref: 
     initialValue: {
       opened: true,
       label: 'Pages',
-      children: false,
+      children: true,
       disableSelect: true,
       icon: { path: 'folder-page.svg' },
       getItems: async (context) => {
