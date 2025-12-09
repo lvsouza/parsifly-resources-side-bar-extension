@@ -1,0 +1,224 @@
+import { ContextMenuItem, ExtensionBase, IComponent, ICollection, IFolder, IProject, ListViewItem, IDoc } from 'parsifly-extension-base';
+
+
+
+const loadComponents = async (application: ExtensionBase['application'], ref: ICollection<IComponent | IFolder<IComponent>>): Promise<ListViewItem[]> => {
+  const items = await ref.value();
+
+  return items.map(item => {
+    if (item.type === 'folder') {
+      return new ListViewItem({
+        key: item.id,
+        initialValue: {
+          children: true,
+          label: item.name,
+          icon: { name: 'VscFolder' },
+          getContextMenuItems: async () => {
+            return [
+              new ContextMenuItem({
+                label: 'Delete',
+                key: `delete:${item.id}`,
+                icon: { name: 'VscTrash' },
+                description: 'This action is irreversible',
+                onClick: async () => {
+                  await ref.doc(item.id).delete()
+                },
+              }),
+              new ContextMenuItem({
+                label: 'New component',
+                icon: { name: 'VscNewFile' },
+                key: `new-component:${item.id}`,
+                description: 'Add to this folder a new component',
+                onClick: async () => {
+                  const name = await application.commands.editor.showQuickPick({
+                    title: 'Component name?',
+                    placeholder: 'Example: Component1',
+                    helpText: 'Type the name of the component.',
+                  });
+                  if (!name) return;
+
+                  await ref.doc(item.id).collection('content').add({
+                    name: name,
+                    description: '',
+                    type: 'component',
+                    id: crypto.randomUUID(),
+                  });
+                },
+              }),
+              new ContextMenuItem({
+                label: 'New folder',
+                key: `new-folder:${item.id}`,
+                icon: { name: 'VscNewFolder' },
+                description: 'Add to this folder a new folder',
+                onClick: async () => {
+                  const name = await application.commands.editor.showQuickPick({
+                    title: 'Folder name',
+                    placeholder: 'Example: Folder1',
+                    helpText: 'Type the name of the folder.',
+                  });
+                  if (!name) return;
+
+                  await ref.doc(item.id).collection('content').add({
+                    name: name,
+                    content: [],
+                    type: 'folder',
+                    description: '',
+                    id: crypto.randomUUID(),
+                  });
+                },
+              }),
+            ];
+          },
+          getItems: async () => {
+            const items = await loadComponents(application, ref.doc(item.id).collection('content'))
+            return items
+          },
+          onItemClick: async () => {
+            await application.selection.select(item.id);
+          },
+        },
+        onDidMount: async (context) => {
+          context.set('label', item.name);
+          context.set('description', item.description || '');
+
+          const selectionIds = await application.selection.get();
+          context.select(selectionIds.includes(item.id));
+
+          const editionSub = application.edition.subscribe(key => context.edit(key === item.id));
+          const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
+          const itemsSub = await ref.doc(item.id).collection('content').onValue(() => context.refetchChildren());
+          const selectionSub = application.selection.subscribe(key => context.select(key.includes(item.id)));
+          const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
+
+          context.onDidUnmount(async () => {
+            editionSub();
+            selectionSub();
+            await nameSub.unsubscribe();
+            await itemsSub.unsubscribe();
+            await descriptionSub.unsubscribe();
+          });
+        },
+      })
+    }
+
+    return new ListViewItem({
+      key: item.id,
+      initialValue: {
+        children: false,
+        label: item.name,
+        icon: { name: 'VscRuby' },
+        onItemClick: async () => {
+          await application.selection.select(item.id);
+        },
+        onItemDoubleClick: async () => {
+          await application.edition.open(item.id);
+        },
+        getContextMenuItems: async () => {
+          return [
+            new ContextMenuItem({
+              label: 'Delete',
+              key: `delete:${item.id}`,
+              icon: { name: 'VscTrash' },
+              description: 'This action is irreversible',
+              onClick: async () => {
+                await ref.doc(item.id).delete()
+              },
+            }),
+          ];
+        },
+      },
+      onDidMount: async (context) => {
+        context.set('label', item.name);
+        context.set('description', item.description || '');
+
+        const selectionIds = await application.selection.get();
+        const editionId = await application.edition.get();
+        context.select(selectionIds.includes(item.id));
+        context.edit(editionId === item.id);
+
+        const editionSub = application.edition.subscribe(key => context.edit(key === item.id));
+        const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
+        const selectionSub = application.selection.subscribe(key => context.select(key.includes(item.id)));
+        const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
+
+        context.onDidUnmount(async () => {
+          editionSub();
+          selectionSub();
+          await nameSub.unsubscribe();
+          await descriptionSub.unsubscribe();
+        });
+      },
+    });
+  });
+}
+
+export const loadComponentsFolder = (application: ExtensionBase['application'], ref: IDoc<IProject>) => {
+
+  return new ListViewItem({
+    key: 'components-group',
+    initialValue: {
+      children: true,
+      label: 'Components',
+      disableSelect: true,
+      icon: { name: 'VscRuby' },
+      getItems: async () => {
+        const items = await loadComponents(application, ref.collection('components'))
+        return items;
+      },
+      getContextMenuItems: async () => {
+        return [
+          new ContextMenuItem({
+            label: 'New component',
+            icon: { name: 'VscNewFile' },
+            key: `new-component:components`,
+            description: 'Add to this folder a new component',
+            onClick: async () => {
+              const name = await application.commands.editor.showQuickPick({
+                title: 'Component name?',
+                placeholder: 'Example: Component1',
+                helpText: 'Type the name of the component.',
+              });
+              if (!name) return;
+
+              await ref.collection('components').add({
+                name: name,
+                description: '',
+                type: 'component',
+                id: crypto.randomUUID(),
+              });
+            },
+          }),
+          new ContextMenuItem({
+            label: 'New folder',
+            icon: { name: 'VscNewFolder' },
+            key: `new-folder:components`,
+            description: 'Add to this folder a new folder',
+            onClick: async () => {
+              const name = await application.commands.editor.showQuickPick({
+                title: 'Folder name',
+                placeholder: 'Example: Folder1',
+                helpText: 'Type the name of the folder.',
+              });
+              if (!name) return;
+
+              await ref.collection('components').add({
+                name: name,
+                content: [],
+                type: 'folder',
+                description: '',
+                id: crypto.randomUUID(),
+              });
+            },
+          }),
+        ];
+      }
+    },
+    onDidMount: async (context) => {
+      const itemsSub = await ref.collection('components').onValue(() => context.refetchChildren());
+
+      context.onDidUnmount(async () => {
+        await itemsSub.unsubscribe();
+      });
+    },
+  })
+}
