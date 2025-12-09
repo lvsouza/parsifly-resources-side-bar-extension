@@ -1,6 +1,6 @@
 {
   "name": "parsifly-extension-resources-side-bar",
-  "version": "1.1.17",
+  "version": "1.1.18",
   "module": "dist/index.js",
   "authorName": "Lucas Souza Dev",
   "displayName": "Resources Side Bar",
@@ -12,7 +12,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "parsifly-extension-base": "link:../parsifly-extension-base"
+    "parsifly-extension-base": "^1.2.18"
   },
   "devDependencies": {
     "typescript": "^5.6.2",
