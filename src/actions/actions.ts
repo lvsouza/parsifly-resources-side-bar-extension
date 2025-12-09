@@ -10,10 +10,10 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
       return new ListViewItem({
         key: item.id,
         initialValue: {
-          children: true,
+          children: false,
           label: item.name,
           icon: { name: 'VscFolder' },
-          getContextMenuItems: async () => {
+          getContextMenuItems: async (context) => {
             return [
               new ContextMenuItem({
                 label: 'Delete',
@@ -37,6 +37,8 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
                   });
                   if (!name) return;
 
+                  await context.set('opened', true);
+
                   await ref.doc(item.id).collection('content').add({
                     name: name,
                     description: '',
@@ -58,6 +60,8 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
                   });
                   if (!name) return;
 
+                  await context.set('opened', true);
+
                   await ref.doc(item.id).collection('content').add({
                     name: name,
                     content: [],
@@ -69,8 +73,9 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
               }),
             ];
           },
-          getItems: async () => {
-            const items = await loadActions(application, ref.doc(item.id).collection('content'))
+          getItems: async (context) => {
+            const items = await loadActions(application, ref.doc(item.id).collection('content'));
+            context.set('children', items.length > 0);
             return items
           },
           onItemClick: async () => {
@@ -157,15 +162,16 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
   return new ListViewItem({
     key: 'actions-group',
     initialValue: {
-      children: true,
+      children: false,
       label: 'Actions',
       disableSelect: true,
       icon: { name: 'VscSymbolMethod' },
-      getItems: async () => {
-        const items = await loadActions(application, ref.collection('actions'))
+      getItems: async (context) => {
+        const items = await loadActions(application, ref.collection('actions'));
+        context.set('children', items.length > 0);
         return items;
       },
-      getContextMenuItems: async () => {
+      getContextMenuItems: async (context) => {
         return [
           new ContextMenuItem({
             label: 'New action',
@@ -179,6 +185,8 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
                 helpText: 'Type the name of the action.',
               });
               if (!name) return;
+
+              await context.set('opened', true);
 
               await ref.collection('actions').add({
                 name: name,
@@ -200,6 +208,8 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
                 helpText: 'Type the name of the folder.',
               });
               if (!name) return;
+
+              await context.set('opened', true);
 
               await ref.collection('actions').add({
                 name: name,

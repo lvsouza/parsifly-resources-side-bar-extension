@@ -10,10 +10,10 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
       return new ListViewItem({
         key: item.id,
         initialValue: {
-          children: true,
+          children: false,
           label: item.name,
           icon: { name: 'VscFolder' },
-          getContextMenuItems: async () => {
+          getContextMenuItems: async (context) => {
             return [
               new ContextMenuItem({
                 label: 'Delete',
@@ -37,6 +37,8 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
                   });
                   if (!name) return;
 
+                  await context.set('opened', true);
+
                   await ref.doc(item.id).collection('content').add({
                     name: name,
                     description: '',
@@ -58,6 +60,8 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
                   });
                   if (!name) return;
 
+                  await context.set('opened', true);
+
                   await ref.doc(item.id).collection('content').add({
                     name: name,
                     content: [],
@@ -69,8 +73,9 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
               }),
             ];
           },
-          getItems: async () => {
-            const items = await loadComponents(application, ref.doc(item.id).collection('content'))
+          getItems: async (context) => {
+            const items = await loadComponents(application, ref.doc(item.id).collection('content'));
+            context.set('children', items.length > 0);
             return items
           },
           onItemClick: async () => {
@@ -157,15 +162,16 @@ export const loadComponentsFolder = (application: ExtensionBase['application'], 
   return new ListViewItem({
     key: 'components-group',
     initialValue: {
-      children: true,
+      children: false,
       label: 'Components',
       disableSelect: true,
       icon: { name: 'VscRuby' },
-      getItems: async () => {
-        const items = await loadComponents(application, ref.collection('components'))
+      getItems: async (context) => {
+        const items = await loadComponents(application, ref.collection('components'));
+        context.set('children', items.length > 0);
         return items;
       },
-      getContextMenuItems: async () => {
+      getContextMenuItems: async (context) => {
         return [
           new ContextMenuItem({
             label: 'New component',
@@ -179,6 +185,8 @@ export const loadComponentsFolder = (application: ExtensionBase['application'], 
                 helpText: 'Type the name of the component.',
               });
               if (!name) return;
+
+              await context.set('opened', true);
 
               await ref.collection('components').add({
                 name: name,
@@ -200,6 +208,8 @@ export const loadComponentsFolder = (application: ExtensionBase['application'], 
                 helpText: 'Type the name of the folder.',
               });
               if (!name) return;
+
+              await context.set('opened', true);
 
               await ref.collection('components').add({
                 name: name,

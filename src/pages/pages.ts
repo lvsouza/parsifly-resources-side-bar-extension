@@ -10,10 +10,10 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
       return new ListViewItem({
         key: item.id,
         initialValue: {
-          children: true,
+          children: false,
           label: item.name,
           icon: { path: 'folder-page.svg' },
-          getContextMenuItems: async () => {
+          getContextMenuItems: async (context) => {
             return [
               new ContextMenuItem({
                 label: 'Delete',
@@ -37,6 +37,8 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
                   });
                   if (!name) return;
 
+                  await context.set('opened', true);
+
                   await ref.doc(item.id).collection('content').add({
                     name: name,
                     description: '',
@@ -58,6 +60,8 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
                   });
                   if (!name) return;
 
+                  await context.set('opened', true);
+
                   await ref.doc(item.id).collection('content').add({
                     name: name,
                     content: [],
@@ -69,8 +73,9 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
               }),
             ];
           },
-          getItems: async () => {
-            const items = await loadPages(application, ref.doc(item.id).collection('content'))
+          getItems: async (context) => {
+            const items = await loadPages(application, ref.doc(item.id).collection('content'));
+            context.set('children', items.length > 0);
             return items
           },
           onItemClick: async () => {
@@ -158,15 +163,16 @@ export const loadPagesFolder = (application: ExtensionBase['application'], ref: 
     key: 'pages-group',
     initialValue: {
       opened: true,
-      children: true,
       label: 'Pages',
+      children: false,
       disableSelect: true,
       icon: { path: 'folder-page.svg' },
-      getItems: async () => {
-        const items = await loadPages(application, ref.collection('pages'))
+      getItems: async (context) => {
+        const items = await loadPages(application, ref.collection('pages'));
+        context.set('children', items.length > 0);
         return items;
       },
-      getContextMenuItems: async () => {
+      getContextMenuItems: async (context) => {
         return [
           new ContextMenuItem({
             label: 'New page',
@@ -180,6 +186,8 @@ export const loadPagesFolder = (application: ExtensionBase['application'], ref: 
                 helpText: 'Type the name of the page.',
               });
               if (!name) return;
+
+              await context.set('opened', true);
 
               await ref.collection('pages').add({
                 name: name,
@@ -201,6 +209,8 @@ export const loadPagesFolder = (application: ExtensionBase['application'], ref: 
                 helpText: 'Type the name of the folder.',
               });
               if (!name) return;
+
+              await context.set('opened', true);
 
               await ref.collection('pages').add({
                 name: name,
