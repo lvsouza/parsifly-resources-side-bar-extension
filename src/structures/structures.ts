@@ -1,6 +1,83 @@
-import { ContextMenuItem, ExtensionBase, IStructure, ICollection, IFolder, IProject, ListViewItem, IDoc } from 'parsifly-extension-base';
+import { ContextMenuItem, ExtensionBase, IStructure, ICollection, IFolder, IProject, ListViewItem, IDoc, IStructureAttribute } from 'parsifly-extension-base';
 
 
+const loadStructureAttributes = async (application: ExtensionBase['application'], ref: ICollection<IStructureAttribute>): Promise<ListViewItem[]> => {
+  const items = await ref.value();
+
+  return items.map(item => {
+    return new ListViewItem({
+      key: item.id,
+      initialValue: {
+        children: false,
+        label: item.name,
+        icon: { path: 'structure-attribute.svg' },
+        onItemClick: async () => {
+          await application.selection.select(item.id);
+        },
+        getItems: async (context) => {
+          const items = await loadStructureAttributes(application, ref.doc(item.id).collection('attributes'))
+          context.set('children', items.length > 0);
+          return items
+        },
+        getContextMenuItems: async (context) => {
+          return [
+            new ContextMenuItem({
+              label: 'New attribute',
+              icon: { name: 'VscNewFile' },
+              key: `new-structure-attribute:${item.id}`,
+              description: 'Add to this structure a new attribute',
+              onClick: async () => {
+                const name = await application.commands.editor.showQuickPick({
+                  title: 'Attribute name?',
+                  placeholder: 'Example: Attribute1',
+                  helpText: 'Type the name of the attribute.',
+                });
+                if (!name) return;
+
+                await context.set('opened', true);
+
+                await ref.doc(item.id).collection('attributes').add({
+                  name: name,
+                  description: '',
+                  id: crypto.randomUUID(),
+                  type: 'structure_attribute',
+                });
+              },
+            }),
+            new ContextMenuItem({
+              label: 'Delete',
+              key: `delete:${item.id}`,
+              icon: { name: 'VscTrash' },
+              description: 'This action is irreversible',
+              onClick: async () => {
+                await ref.doc(item.id).delete()
+              },
+            }),
+          ];
+        },
+      },
+      onDidMount: async (context) => {
+        context.set('label', item.name);
+        context.set('description', item.description || '');
+
+        const selectionIds = await application.selection.get();
+        context.select(selectionIds.includes(item.id));
+
+        const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
+        const selectionSub = application.selection.subscribe(key => context.select(key.includes(item.id)));
+        const itemsSub = await ref.doc(item.id).collection('attributes').onValue(() => context.refetchChildren());
+        const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
+
+        context.onDidUnmount(async () => {
+          selectionSub();
+          await itemsSub.unsubscribe();
+          await nameSub.unsubscribe();
+          await descriptionSub.unsubscribe();
+        });
+      },
+    });
+  });
+}
 
 const loadStructures = async (application: ExtensionBase['application'], ref: ICollection<IStructure | IFolder<IStructure>>): Promise<ListViewItem[]> => {
   const items = await ref.value();
@@ -10,20 +87,14 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
       return new ListViewItem({
         key: item.id,
         initialValue: {
-          children: true,
+          children: false,
           label: item.name,
           icon: { path: 'folder-structure.svg' },
-          getContextMenuItems: async () => {
+          onItemClick: async () => {
+            await application.selection.select(item.id);
+          },
+          getContextMenuItems: async (context) => {
             return [
-              new ContextMenuItem({
-                label: 'Delete',
-                key: `delete:${item.id}`,
-                icon: { name: 'VscTrash' },
-                description: 'This action is irreversible',
-                onClick: async () => {
-                  await ref.doc(item.id).delete()
-                },
-              }),
               new ContextMenuItem({
                 label: 'New structure',
                 icon: { name: 'VscNewFile' },
@@ -36,6 +107,8 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
                     helpText: 'Type the name of the structure.',
                   });
                   if (!name) return;
+
+                  await context.set('opened', true);
 
                   await ref.doc(item.id).collection('content').add({
                     name: name,
@@ -58,6 +131,8 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
                   });
                   if (!name) return;
 
+                  await context.set('opened', true);
+
                   await ref.doc(item.id).collection('content').add({
                     name: name,
                     content: [],
@@ -67,14 +142,21 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
                   });
                 },
               }),
+              new ContextMenuItem({
+                label: 'Delete',
+                key: `delete:${item.id}`,
+                icon: { name: 'VscTrash' },
+                description: 'This action is irreversible',
+                onClick: async () => {
+                  await ref.doc(item.id).delete()
+                },
+              }),
             ];
           },
-          getItems: async () => {
-            const items = await loadStructures(application, ref.doc(item.id).collection('content'))
+          getItems: async (context) => {
+            const items = await loadStructures(application, ref.doc(item.id).collection('content'));
+            context.set('children', items.length > 0);
             return items
-          },
-          onItemClick: async () => {
-            await application.selection.select(item.id);
           },
         },
         onDidMount: async (context) => {
@@ -84,14 +166,12 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
           const selectionIds = await application.selection.get();
           context.select(selectionIds.includes(item.id));
 
-          const editionSub = application.edition.subscribe(key => context.edit(key === item.id));
           const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
           const itemsSub = await ref.doc(item.id).collection('content').onValue(() => context.refetchChildren());
           const selectionSub = application.selection.subscribe(key => context.select(key.includes(item.id)));
           const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
 
           context.onDidUnmount(async () => {
-            editionSub();
             selectionSub();
             await nameSub.unsubscribe();
             await itemsSub.unsubscribe();
@@ -110,11 +190,36 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
         onItemClick: async () => {
           await application.selection.select(item.id);
         },
-        onItemDoubleClick: async () => {
-          await application.edition.open(item.id);
+        getItems: async (context) => {
+          const items = await loadStructureAttributes(application, ref.doc(item.id).collection('attributes'));
+          context.set('children', items.length > 0);
+          return items
         },
-        getContextMenuItems: async () => {
+        getContextMenuItems: async (context) => {
           return [
+            new ContextMenuItem({
+              label: 'New attribute',
+              icon: { name: 'VscNewFile' },
+              key: `new-structure-attribute:${item.id}`,
+              description: 'Add to this structure a new attribute',
+              onClick: async () => {
+                const name = await application.commands.editor.showQuickPick({
+                  title: 'Attribute name?',
+                  placeholder: 'Example: Attribute1',
+                  helpText: 'Type the name of the attribute.',
+                });
+                if (!name) return;
+
+                await context.set('opened', true);
+
+                await ref.doc(item.id).collection('attributes').add({
+                  name: name,
+                  description: '',
+                  id: crypto.randomUUID(),
+                  type: 'structure_attribute',
+                });
+              },
+            }),
             new ContextMenuItem({
               label: 'Delete',
               key: `delete:${item.id}`,
@@ -132,19 +237,17 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
         context.set('description', item.description || '');
 
         const selectionIds = await application.selection.get();
-        const editionId = await application.edition.get();
         context.select(selectionIds.includes(item.id));
-        context.edit(editionId === item.id);
 
-        const editionSub = application.edition.subscribe(key => context.edit(key === item.id));
         const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
         const selectionSub = application.selection.subscribe(key => context.select(key.includes(item.id)));
+        const itemsSub = await ref.doc(item.id).collection('attributes').onValue(() => context.refetchChildren());
         const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
 
         context.onDidUnmount(async () => {
-          editionSub();
           selectionSub();
           await nameSub.unsubscribe();
+          await itemsSub.unsubscribe();
           await descriptionSub.unsubscribe();
         });
       },
@@ -157,15 +260,16 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
   return new ListViewItem({
     key: 'structures-group',
     initialValue: {
-      children: true,
+      children: false,
       label: 'Structures',
       disableSelect: true,
       icon: { path: 'folder-structure.svg' },
-      getItems: async () => {
-        const items = await loadStructures(application, ref.collection('structures'))
+      getItems: async (context) => {
+        const items = await loadStructures(application, ref.collection('structures'));
+        context.set('children', items.length > 0);
         return items;
       },
-      getContextMenuItems: async () => {
+      getContextMenuItems: async (context) => {
         return [
           new ContextMenuItem({
             label: 'New structure',
@@ -179,6 +283,8 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
                 helpText: 'Type the name of the structure.',
               });
               if (!name) return;
+
+              await context.set('opened', true);
 
               await ref.collection('structures').add({
                 name: name,
@@ -200,6 +306,8 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
                 helpText: 'Type the name of the folder.',
               });
               if (!name) return;
+
+              await context.set('opened', true);
 
               await ref.collection('structures').add({
                 name: name,
