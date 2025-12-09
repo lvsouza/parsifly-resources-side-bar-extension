@@ -12,7 +12,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
         initialValue: {
           children: true,
           label: item.name,
-          icon: { name: 'VscFolder' },
+          icon: { path: 'folder-structure.svg' },
           getContextMenuItems: async () => {
             return [
               new ContextMenuItem({
@@ -106,7 +106,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
       initialValue: {
         children: false,
         label: item.name,
-        icon: { name: 'VscSymbolInterface' },
+        icon: { path: 'structure.svg' },
         onItemClick: async () => {
           await application.selection.select(item.id);
         },
@@ -160,7 +160,7 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
       children: true,
       label: 'Structures',
       disableSelect: true,
-      icon: { name: 'VscSymbolInterface' },
+      icon: { path: 'folder-structure.svg' },
       getItems: async () => {
         const items = await loadStructures(application, ref.collection('structures'))
         return items;
