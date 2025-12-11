@@ -33,7 +33,7 @@ new class Extension extends ExtensionBase {
                 opened: true,
                 children: true,
                 label: projectName,
-                icon: { path: 'project.svg' },
+                icon: { type: 'project' },
                 description: projectDescription || '',
                 onItemClick: async () => {
                   await this.application.selection.select(projectId);
@@ -47,7 +47,7 @@ new class Extension extends ExtensionBase {
                       children: true,
                       label: 'Shared',
                       disableSelect: true,
-                      icon: { path: 'shared-folder.svg' },
+                      icon: { type: 'shared-folder' },
                       getItems: async () => [
                         loadComponentsFolder(this.application, ref),
                         loadActionsFolder(this.application, ref),
@@ -58,7 +58,7 @@ new class Extension extends ExtensionBase {
                             label: 'Variables',
                             disableSelect: true,
                             getItems: async () => [],
-                            icon: { path: 'variable-global-folder.svg' },
+                            icon: { type: 'variable-global-folder' },
                           },
                         }),
                         new ListViewItem({
@@ -67,7 +67,7 @@ new class Extension extends ExtensionBase {
                             children: true,
                             disableSelect: true,
                             label: 'Integrations',
-                            icon: { path: 'integrations-folder.svg' },
+                            icon: { type: 'integrations-folder' },
                             getItems: async () => [
                               new ListViewItem({
                                 key: 'rest-api-group',
@@ -76,7 +76,7 @@ new class Extension extends ExtensionBase {
                                   label: 'Rest API',
                                   disableSelect: true,
                                   getItems: async () => [],
-                                  icon: { path: 'rest-api-folder.svg' },
+                                  icon: { type: 'rest-api-folder' },
                                 },
                               }),
                               new ListViewItem({
@@ -85,7 +85,7 @@ new class Extension extends ExtensionBase {
                                   children: true,
                                   disableSelect: true,
                                   label: 'External logic',
-                                  icon: { path: 'external-logic-folder.svg' },
+                                  icon: { type: 'external-logic-folder' },
                                   getItems: async () => [],
                                 },
                               }),
@@ -99,7 +99,7 @@ new class Extension extends ExtensionBase {
                             children: true,
                             label: 'Assets',
                             disableSelect: true,
-                            icon: { path: 'attachment-folder.svg' },
+                            icon: { type: 'attachment-folder' },
                             getItems: async () => [
                               new ListViewItem({
                                 key: 'themes-group',
@@ -108,7 +108,7 @@ new class Extension extends ExtensionBase {
                                   label: 'Themes',
                                   disableSelect: true,
                                   getItems: async () => [],
-                                  icon: { path: 'theme-folder.svg' },
+                                  icon: { type: 'theme-folder' },
                                 },
                               }),
                               new ListViewItem({
@@ -118,7 +118,7 @@ new class Extension extends ExtensionBase {
                                   children: true,
                                   disableSelect: true,
                                   getItems: async () => [],
-                                  icon: { path: 'file-folder.svg' },
+                                  icon: { type: 'file-folder' },
                                 },
                               }),
                             ],
@@ -130,7 +130,7 @@ new class Extension extends ExtensionBase {
                             children: true,
                             disableSelect: true,
                             label: 'Dependencies',
-                            icon: { path: 'dependency-folder.svg' },
+                            icon: { type: 'dependency-folder' },
                             getItems: async () => [],
                           },
                         }),

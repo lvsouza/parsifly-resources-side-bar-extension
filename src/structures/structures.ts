@@ -10,14 +10,14 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
       initialValue: {
         children: false,
         label: item.name,
-        icon: { path: 'structure-attribute.svg' },
+        icon: { type: 'structure-attribute' },
         onItemClick: async () => {
           await application.selection.select(item.id);
         },
         getItems: async (context) => {
           const items = await loadStructureAttributes(application, ref.doc(item.id).collection('attributes'))
           context.set('children', items.length > 0);
-          context.set('icon', items.length > 0 ? { path: 'substructure.svg' } : { path: 'structure-attribute.svg' });
+          context.set('icon', items.length > 0 ? { type: 'substructure' } : { type: 'structure-attribute' });
           return items
         },
         getContextMenuItems: async (context) => {
@@ -90,7 +90,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
         initialValue: {
           children: false,
           label: item.name,
-          icon: { path: 'folder-structure.svg' },
+          icon: { type: 'structure-folder' },
           onItemClick: async () => {
             await application.selection.select(item.id);
           },
@@ -157,7 +157,6 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
           getItems: async (context) => {
             const items = await loadStructures(application, ref.doc(item.id).collection('content'));
             context.set('children', items.length > 0);
-            context.set('icon', items.length > 0 ? { path: 'substructure.svg' } : { path: 'structure-attribute.svg' });
             return items
           },
         },
@@ -188,7 +187,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
       initialValue: {
         children: false,
         label: item.name,
-        icon: { path: 'structure.svg' },
+        icon: { type: 'structure' },
         onItemClick: async () => {
           await application.selection.select(item.id);
         },
@@ -265,7 +264,7 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
       children: false,
       label: 'Structures',
       disableSelect: true,
-      icon: { path: 'folder-structure.svg' },
+      icon: { type: 'structure-folder' },
       getItems: async (context) => {
         const items = await loadStructures(application, ref.collection('structures'));
         context.set('children', items.length > 0);

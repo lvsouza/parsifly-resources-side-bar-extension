@@ -12,7 +12,7 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
         initialValue: {
           children: true,
           label: item.name,
-          icon: { path: 'action-global-folder.svg' },
+          icon: { type: 'action-global-folder' },
           getContextMenuItems: async (context) => {
             return [
               new ContextMenuItem({
@@ -111,7 +111,7 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
       initialValue: {
         children: false,
         label: item.name,
-        icon: { path: 'action-global.svg' },
+        icon: { type: 'action-global' },
         onItemClick: async () => {
           await application.selection.select(item.id);
         },
@@ -165,7 +165,7 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
       children: true,
       label: 'Actions',
       disableSelect: true,
-      icon: { path: 'action-global-folder.svg' },
+      icon: { type: 'action-global-folder' },
       getItems: async (context) => {
         const items = await loadActions(application, ref.collection('actions'));
         context.set('children', items.length > 0);
