@@ -12,7 +12,7 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
         initialValue: {
           children: true,
           label: item.name,
-          icon: { name: 'VscFolder' },
+          icon: { path: 'component-folder.svg' },
           getContextMenuItems: async (context) => {
             return [
               new ContextMenuItem({
@@ -111,7 +111,7 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
       initialValue: {
         children: false,
         label: item.name,
-        icon: { name: 'VscRuby' },
+        icon: { path: 'component.svg' },
         onItemClick: async () => {
           await application.selection.select(item.id);
         },
@@ -165,7 +165,7 @@ export const loadComponentsFolder = (application: ExtensionBase['application'], 
       children: true,
       label: 'Components',
       disableSelect: true,
-      icon: { name: 'VscRuby' },
+      icon: { path: 'component-folder.svg' },
       getItems: async (context) => {
         const items = await loadComponents(application, ref.collection('components'));
         context.set('children', items.length > 0);

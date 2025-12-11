@@ -33,7 +33,7 @@ new class Extension extends ExtensionBase {
                 opened: true,
                 children: true,
                 label: projectName,
-                icon: { name: 'VscRootFolderOpened' },
+                icon: { path: 'project.svg' },
                 description: projectDescription || '',
                 onItemClick: async () => {
                   await this.application.selection.select(projectId);
@@ -47,7 +47,7 @@ new class Extension extends ExtensionBase {
                       children: true,
                       label: 'Shared',
                       disableSelect: true,
-                      icon: { name: 'VscFileSubmodule' },
+                      icon: { path: 'shared-folder.svg' },
                       getItems: async () => [
                         loadComponentsFolder(this.application, ref),
                         loadActionsFolder(this.application, ref),
@@ -58,7 +58,7 @@ new class Extension extends ExtensionBase {
                             label: 'Variables',
                             disableSelect: true,
                             getItems: async () => [],
-                            icon: { name: 'VscSymbolVariable' },
+                            icon: { path: 'variable-global-folder.svg' },
                           },
                         }),
                         new ListViewItem({
@@ -67,8 +67,29 @@ new class Extension extends ExtensionBase {
                             children: true,
                             disableSelect: true,
                             label: 'Integrations',
-                            getItems: async () => [],
-                            icon: { name: 'VscJson' },
+                            icon: { path: 'integrations-folder.svg' },
+                            getItems: async () => [
+                              new ListViewItem({
+                                key: 'rest-api-group',
+                                initialValue: {
+                                  children: true,
+                                  label: 'Rest API',
+                                  disableSelect: true,
+                                  getItems: async () => [],
+                                  icon: { path: 'rest-api-folder.svg' },
+                                },
+                              }),
+                              new ListViewItem({
+                                key: 'externals-group',
+                                initialValue: {
+                                  children: true,
+                                  disableSelect: true,
+                                  label: 'External logic',
+                                  icon: { path: 'external-logic-folder.svg' },
+                                  getItems: async () => [],
+                                },
+                              }),
+                            ],
                           },
                         }),
                         loadStructuresFolder(this.application, ref),
@@ -78,8 +99,29 @@ new class Extension extends ExtensionBase {
                             children: true,
                             label: 'Assets',
                             disableSelect: true,
-                            getItems: async () => [],
-                            icon: { name: 'VscAttach' },
+                            icon: { path: 'attachment-folder.svg' },
+                            getItems: async () => [
+                              new ListViewItem({
+                                key: 'themes-group',
+                                initialValue: {
+                                  children: true,
+                                  label: 'Themes',
+                                  disableSelect: true,
+                                  getItems: async () => [],
+                                  icon: { path: 'theme-folder.svg' },
+                                },
+                              }),
+                              new ListViewItem({
+                                key: 'files-group',
+                                initialValue: {
+                                  label: 'Files',
+                                  children: true,
+                                  disableSelect: true,
+                                  getItems: async () => [],
+                                  icon: { path: 'file-folder.svg' },
+                                },
+                              }),
+                            ],
                           },
                         }),
                         new ListViewItem({
@@ -88,7 +130,7 @@ new class Extension extends ExtensionBase {
                             children: true,
                             disableSelect: true,
                             label: 'Dependencies',
-                            icon: { name: 'VscDebugDisconnect' },
+                            icon: { path: 'dependency-folder.svg' },
                             getItems: async () => [],
                           },
                         }),

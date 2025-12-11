@@ -1,6 +1,6 @@
 {
   "name": "parsifly-extension-resources-side-bar",
-  "version": "1.1.19",
+  "version": "1.1.20",
   "module": "dist/index.js",
   "authorName": "Lucas Souza Dev",
   "displayName": "Resources Side Bar",
