@@ -30,12 +30,15 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
 
                   await context.set('opened', true);
 
-                  await ref.doc(item.id).collection('content').add({
+                  const newItem = {
                     name: name,
                     description: '',
                     type: 'action',
                     id: crypto.randomUUID(),
-                  });
+                  };
+
+                  await ref.doc(item.id).collection('content').add(newItem);
+                  await application.selection.select(newItem.id);
                 },
               }),
               new ContextMenuItem({
@@ -53,13 +56,16 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
 
                   await context.set('opened', true);
 
-                  await ref.doc(item.id).collection('content').add({
+                  const newItem = {
                     name: name,
                     content: [],
                     type: 'folder',
                     description: '',
                     id: crypto.randomUUID(),
-                  });
+                  };
+
+                  await ref.doc(item.id).collection('content').add(newItem);
+                  await application.selection.select(newItem.id);
                 },
               }),
               new ContextMenuItem({
@@ -188,12 +194,15 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
 
               await context.set('opened', true);
 
-              await ref.collection('actions').add({
+              const newItem = {
                 name: name,
                 description: '',
                 type: 'action',
                 id: crypto.randomUUID(),
-              });
+              };
+
+              await ref.collection('actions').add(newItem);
+              await application.selection.select(newItem.id);
             },
           }),
           new ContextMenuItem({
@@ -211,13 +220,16 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
 
               await context.set('opened', true);
 
-              await ref.collection('actions').add({
+              const newItem = {
                 name: name,
                 content: [],
                 type: 'folder',
                 description: '',
                 id: crypto.randomUUID(),
-              });
+              };
+
+              await ref.collection('actions').add(newItem);
+              await application.selection.select(newItem.id);
             },
           }),
         ];

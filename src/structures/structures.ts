@@ -37,12 +37,15 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
 
                 await context.set('opened', true);
 
-                await ref.doc(item.id).collection('attributes').add({
+                const newItem = {
                   name: name,
                   description: '',
                   id: crypto.randomUUID(),
                   type: 'structure_attribute',
-                });
+                };
+
+                await ref.doc(item.id).collection('attributes').add(newItem);
+                await application.selection.select(newItem.id);
               },
             }),
             new ContextMenuItem({
@@ -111,12 +114,15 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
 
                   await context.set('opened', true);
 
-                  await ref.doc(item.id).collection('content').add({
+                  const newItem = {
                     name: name,
                     description: '',
                     type: 'structure',
                     id: crypto.randomUUID(),
-                  });
+                  };
+
+                  await ref.doc(item.id).collection('content').add(newItem);
+                  await application.selection.select(newItem.id);
                 },
               }),
               new ContextMenuItem({
@@ -134,13 +140,16 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
 
                   await context.set('opened', true);
 
-                  await ref.doc(item.id).collection('content').add({
+                  const newItem = {
                     name: name,
                     content: [],
                     type: 'folder',
                     description: '',
                     id: crypto.randomUUID(),
-                  });
+                  };
+
+                  await ref.doc(item.id).collection('content').add(newItem);
+                  await application.selection.select(newItem.id);
                 },
               }),
               new ContextMenuItem({
@@ -213,12 +222,15 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
 
                 await context.set('opened', true);
 
-                await ref.doc(item.id).collection('attributes').add({
+                const newItem = {
                   name: name,
                   description: '',
                   id: crypto.randomUUID(),
                   type: 'structure_attribute',
-                });
+                };
+
+                await ref.doc(item.id).collection('attributes').add(newItem);
+                await application.selection.select(newItem.id);
               },
             }),
             new ContextMenuItem({
@@ -287,12 +299,15 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
 
               await context.set('opened', true);
 
-              await ref.collection('structures').add({
+              const newItem = {
                 name: name,
                 description: '',
                 type: 'structure',
                 id: crypto.randomUUID(),
-              });
+              };
+
+              await ref.collection('structures').add(newItem);
+              await application.selection.select(newItem.id);
             },
           }),
           new ContextMenuItem({
@@ -310,13 +325,16 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
 
               await context.set('opened', true);
 
-              await ref.collection('structures').add({
+              const newItem = {
                 name: name,
                 content: [],
                 type: 'folder',
                 description: '',
                 id: crypto.randomUUID(),
-              });
+              };
+
+              await ref.collection('structures').add(newItem);
+              await application.selection.select(newItem.id);
             },
           }),
         ];

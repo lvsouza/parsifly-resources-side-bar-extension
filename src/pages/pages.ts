@@ -30,12 +30,15 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
 
                   await context.set('opened', true);
 
-                  await ref.doc(item.id).collection('content').add({
+                  const newItem = {
                     name: name,
                     description: '',
                     type: 'page',
                     id: crypto.randomUUID(),
-                  });
+                  };
+
+                  await ref.doc(item.id).collection('content').add(newItem);
+                  await application.selection.select(newItem.id);
                 },
               }),
               new ContextMenuItem({
@@ -53,13 +56,16 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
 
                   await context.set('opened', true);
 
-                  await ref.doc(item.id).collection('content').add({
+                  const newItem = {
                     name: name,
                     content: [],
                     type: 'folder',
                     description: '',
                     id: crypto.randomUUID(),
-                  });
+                  };
+
+                  await ref.doc(item.id).collection('content').add(newItem);
+                  await application.selection.select(newItem.id);
                 },
               }),
               new ContextMenuItem({
@@ -189,12 +195,15 @@ export const loadPagesFolder = (application: ExtensionBase['application'], ref: 
 
               await context.set('opened', true);
 
-              await ref.collection('pages').add({
+              const newItem = {
                 name: name,
                 description: '',
                 type: 'page',
                 id: crypto.randomUUID(),
-              });
+              };
+
+              await ref.collection('pages').add(newItem);
+              await application.selection.select(newItem.id);
             },
           }),
           new ContextMenuItem({
@@ -212,13 +221,16 @@ export const loadPagesFolder = (application: ExtensionBase['application'], ref: 
 
               await context.set('opened', true);
 
-              await ref.collection('pages').add({
+              const newItem = {
                 name: name,
                 content: [],
                 type: 'folder',
                 description: '',
                 id: crypto.randomUUID(),
-              });
+              };
+
+              await ref.collection('pages').add(newItem);
+              await application.selection.select(newItem.id);
             },
           }),
         ];

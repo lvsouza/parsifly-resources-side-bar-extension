@@ -30,12 +30,15 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
 
                   await context.set('opened', true);
 
-                  await ref.doc(item.id).collection('content').add({
+                  const newItem = {
                     name: name,
                     description: '',
                     type: 'component',
                     id: crypto.randomUUID(),
-                  });
+                  };
+
+                  await ref.doc(item.id).collection('content').add(newItem);
+                  await application.selection.select(newItem.id);
                 },
               }),
               new ContextMenuItem({
@@ -53,13 +56,16 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
 
                   await context.set('opened', true);
 
-                  await ref.doc(item.id).collection('content').add({
+                  const newItem = {
                     name: name,
                     content: [],
                     type: 'folder',
                     description: '',
                     id: crypto.randomUUID(),
-                  });
+                  };
+
+                  await ref.doc(item.id).collection('content').add(newItem);
+                  await application.selection.select(newItem.id);
                 },
               }),
               new ContextMenuItem({
@@ -188,12 +194,15 @@ export const loadComponentsFolder = (application: ExtensionBase['application'], 
 
               await context.set('opened', true);
 
-              await ref.collection('components').add({
+              const newItem = {
                 name: name,
                 description: '',
                 type: 'component',
                 id: crypto.randomUUID(),
-              });
+              };
+
+              await ref.collection('components').add(newItem);
+              await application.selection.select(newItem.id);
             },
           }),
           new ContextMenuItem({
@@ -211,13 +220,16 @@ export const loadComponentsFolder = (application: ExtensionBase['application'], 
 
               await context.set('opened', true);
 
-              await ref.collection('components').add({
+              const newItem = {
                 name: name,
                 content: [],
                 type: 'folder',
                 description: '',
                 id: crypto.randomUUID(),
-              });
+              };
+
+              await ref.collection('components').add(newItem);
+              await application.selection.select(newItem.id);
             },
           }),
         ];
