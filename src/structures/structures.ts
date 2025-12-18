@@ -1,8 +1,11 @@
-import { ContextMenuItem, ExtensionBase, IStructure, ICollection, IFolder, IProject, ListViewItem, IDoc, IStructureAttribute } from 'parsifly-extension-base';
+import { ContextMenuItem, ExtensionBase, IStructure, ICollection, IFolder, IProject, ListViewItem, IDoc, IStructureAttribute, Envs } from 'parsifly-extension-base';
 
+Envs.DEBUG = false;
 
 const loadStructureAttributes = async (application: ExtensionBase['application'], ref: ICollection<IStructureAttribute>): Promise<ListViewItem[]> => {
   const items = await ref.value();
+
+  items.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }));
 
   return items.map(item => {
     return new ListViewItem({
@@ -59,6 +62,25 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
             }),
           ];
         },
+
+        dragProvides: 'application/x.parsifly.structure-attribute',
+        dropAccepts: [
+          /* 'application/x.parsifly.structure',
+          'application/x.parsifly.substructure',
+          'application/x.parsifly.structure-attribute', */
+        ],
+        onDidDrop: async (_context, event) => {
+          const [droppedItem, path] = await application.dataProviders.findAnyResourceByKey(event.key);
+          if (!droppedItem || !path) return;
+
+          await path.delete();
+          await ref.doc(item.id).collection('content').add(droppedItem);
+
+          const selectionId = await application.selection.get();
+          if (selectionId.includes(droppedItem.id)) {
+            await application.selection.select(droppedItem.id);
+          }
+        },
       },
       onDidMount: async (context) => {
         context.set('label', item.name);
@@ -85,6 +107,18 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
 
 const loadStructures = async (application: ExtensionBase['application'], ref: ICollection<IStructure | IFolder<IStructure>>): Promise<ListViewItem[]> => {
   const items = await ref.value();
+
+  items.sort((a, b) => {
+    const isFolderA = a.type === 'folder';
+    const isFolderB = b.type === 'folder';
+
+    // Primeiro: folders antes de não-folders
+    if (isFolderA && !isFolderB) return -1;
+    if (!isFolderA && isFolderB) return 1;
+
+    // Depois: ordem alfabética pelo nome
+    return a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' });
+  });
 
   return items.map(item => {
     if (item.type === 'folder') {
@@ -168,6 +202,24 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
             context.set('children', items.length > 0);
             return items
           },
+
+          dragProvides: 'application/x.parsifly.structure-folder',
+          dropAccepts: [
+            'application/x.parsifly.structure',
+            'application/x.parsifly.structure-folder',
+          ],
+          onDidDrop: async (_context, event) => {
+            const [droppedItem, path] = await application.dataProviders.findAnyResourceByKey(event.key);
+            if (!droppedItem || !path) return;
+
+            await path.delete();
+            await ref.doc(item.id).collection('content').add(droppedItem);
+
+            const selectionId = await application.selection.get();
+            if (selectionId.includes(droppedItem.id)) {
+              await application.selection.select(droppedItem.id);
+            }
+          },
         },
         onDidMount: async (context) => {
           context.set('label', item.name);
@@ -177,8 +229,8 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
           context.select(selectionIds.includes(item.id));
 
           const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
-          const itemsSub = await ref.doc(item.id).collection('content').onValue(() => context.refetchChildren());
           const selectionSub = application.selection.subscribe(key => context.select(key.includes(item.id)));
+          const itemsSub = await ref.doc(item.id).collection('content').onValue(() => context.refetchChildren());
           const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
 
           context.onDidUnmount(async () => {
@@ -243,6 +295,25 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
               },
             }),
           ];
+        },
+
+        dragProvides: 'application/x.parsifly.structure',
+        dropAccepts: [
+          /* 'application/x.parsifly.structure', */
+          'application/x.parsifly.substructure',
+          'application/x.parsifly.structure-attribute',
+        ],
+        onDidDrop: async (_context, event) => {
+          const [droppedItem, path] = await application.dataProviders.findAnyResourceByKey(event.key);
+          if (!droppedItem || !path) return;
+
+          await path.delete();
+          await ref.doc(item.id).collection('attributes').add(droppedItem);
+
+          const selectionId = await application.selection.get();
+          if (selectionId.includes(droppedItem.id)) {
+            await application.selection.select(droppedItem.id);
+          }
         },
       },
       onDidMount: async (context) => {
@@ -338,7 +409,24 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
             },
           }),
         ];
-      }
+      },
+
+      dropAccepts: [
+        'application/x.parsifly.structure',
+        'application/x.parsifly.structure-folder',
+      ],
+      onDidDrop: async (_context, event) => {
+        const [droppedItem, path] = await application.dataProviders.findAnyResourceByKey(event.key);
+        if (!droppedItem || !path) return;
+
+        await path.delete();
+        await ref.collection('structures').add(droppedItem);
+
+        const selectionId = await application.selection.get();
+        if (selectionId.includes(droppedItem.id)) {
+          await application.selection.select(droppedItem.id);
+        }
+      },
     },
     onDidMount: async (context) => {
       const itemsSub = await ref.collection('structures').onValue(() => context.refetchChildren());

@@ -54,7 +54,7 @@ new class Extension extends ExtensionBase {
                         new ListViewItem({
                           key: 'variables-group',
                           initialValue: {
-                            children: true,
+                            children: false,
                             label: 'Variables',
                             disableSelect: true,
                             getItems: async () => [],
@@ -72,7 +72,7 @@ new class Extension extends ExtensionBase {
                               new ListViewItem({
                                 key: 'rest-api-group',
                                 initialValue: {
-                                  children: true,
+                                  children: false,
                                   label: 'Rest API',
                                   disableSelect: true,
                                   getItems: async () => [],
@@ -82,7 +82,7 @@ new class Extension extends ExtensionBase {
                               new ListViewItem({
                                 key: 'externals-group',
                                 initialValue: {
-                                  children: true,
+                                  children: false,
                                   disableSelect: true,
                                   label: 'External logic',
                                   icon: { type: 'external-logic-folder' },
@@ -104,7 +104,7 @@ new class Extension extends ExtensionBase {
                               new ListViewItem({
                                 key: 'themes-group',
                                 initialValue: {
-                                  children: true,
+                                  children: false,
                                   label: 'Themes',
                                   disableSelect: true,
                                   getItems: async () => [],
@@ -115,7 +115,7 @@ new class Extension extends ExtensionBase {
                                 key: 'files-group',
                                 initialValue: {
                                   label: 'Files',
-                                  children: true,
+                                  children: false,
                                   disableSelect: true,
                                   getItems: async () => [],
                                   icon: { type: 'file-folder' },
@@ -127,7 +127,7 @@ new class Extension extends ExtensionBase {
                         new ListViewItem({
                           key: 'dependencies-group',
                           initialValue: {
-                            children: true,
+                            children: false,
                             disableSelect: true,
                             label: 'Dependencies',
                             icon: { type: 'dependency-folder' },
@@ -162,16 +162,12 @@ new class Extension extends ExtensionBase {
 
 
   async activate() {
-    console.log('EXTENSION: Activating');
-
     this.application.views.register(this.resourcesListView);
 
     await this.application.commands.editor.showPrimarySideBarByKey('resources-side-bar');
   }
 
   async deactivate() {
-    console.log('EXTENSION: Deactivating');
-
     this.application.views.unregister(this.resourcesListView);
   }
 };

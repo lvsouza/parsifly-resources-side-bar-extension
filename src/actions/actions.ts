@@ -5,6 +5,18 @@ import { ContextMenuItem, ExtensionBase, IAction, ICollection, IFolder, IProject
 const loadActions = async (application: ExtensionBase['application'], ref: ICollection<IAction | IFolder<IAction>>): Promise<ListViewItem[]> => {
   const items = await ref.value();
 
+  items.sort((a, b) => {
+    const isFolderA = a.type === 'folder';
+    const isFolderB = b.type === 'folder';
+
+    // Primeiro: folders antes de não-folders
+    if (isFolderA && !isFolderB) return -1;
+    if (!isFolderA && isFolderB) return 1;
+
+    // Depois: ordem alfabética pelo nome
+    return a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' });
+  });
+
   return items.map(item => {
     if (item.type === 'folder') {
       return new ListViewItem({
@@ -87,6 +99,24 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
           onItemClick: async () => {
             await application.selection.select(item.id);
           },
+
+          dragProvides: 'application/x.parsifly.action-folder',
+          dropAccepts: [
+            'application/x.parsifly.action',
+            'application/x.parsifly.action-folder',
+          ],
+          onDidDrop: async (_context, event) => {
+            const [droppedItem, path] = await application.dataProviders.findAnyResourceByKey(event.key);
+            if (!droppedItem || !path) return;
+
+            await path.delete();
+            await ref.doc(item.id).collection('content').add(droppedItem);
+
+            const selectionId = await application.selection.get();
+            if (selectionId.includes(droppedItem.id)) {
+              await application.selection.select(droppedItem.id);
+            }
+          },
         },
         onDidMount: async (context) => {
           context.set('label', item.name);
@@ -137,6 +167,8 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
             }),
           ];
         },
+
+        dragProvides: 'application/x.parsifly.action',
       },
       onDidMount: async (context) => {
         context.set('label', item.name);
@@ -233,7 +265,24 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
             },
           }),
         ];
-      }
+      },
+
+      dropAccepts: [
+        'application/x.parsifly.action',
+        'application/x.parsifly.action-folder',
+      ],
+      onDidDrop: async (_context, event) => {
+        const [droppedItem, path] = await application.dataProviders.findAnyResourceByKey(event.key);
+        if (!droppedItem || !path) return;
+
+        await path.delete();
+        await ref.collection('actions').add(droppedItem);
+
+        const selectionId = await application.selection.get();
+        if (selectionId.includes(droppedItem.id)) {
+          await application.selection.select(droppedItem.id);
+        }
+      },
     },
     onDidMount: async (context) => {
       const itemsSub = await ref.collection('actions').onValue(() => context.refetchChildren());
