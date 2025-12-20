@@ -29,8 +29,8 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
             return [
               new ContextMenuItem({
                 label: 'New action',
-                icon: { name: 'VscNewFile' },
                 key: `new-action:${item.id}`,
+                icon: { type: 'action-global-add' },
                 description: 'Add to this folder a new action',
                 onClick: async () => {
                   const name = await application.commands.editor.showQuickPick({
@@ -56,7 +56,7 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
               new ContextMenuItem({
                 label: 'New folder',
                 key: `new-folder:${item.id}`,
-                icon: { name: 'VscNewFolder' },
+                icon: { type: 'folder-add' },
                 description: 'Add to this folder a new folder',
                 onClick: async () => {
                   const name = await application.commands.editor.showQuickPick({
@@ -83,7 +83,7 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
               new ContextMenuItem({
                 label: 'Delete',
                 key: `delete:${item.id}`,
-                icon: { name: 'VscTrash' },
+                icon: { type: 'delete' },
                 description: 'This action is irreversible',
                 onClick: async () => {
                   await ref.doc(item.id).delete()
@@ -159,7 +159,7 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
             new ContextMenuItem({
               label: 'Delete',
               key: `delete:${item.id}`,
-              icon: { name: 'VscTrash' },
+              icon: { type: 'delete' },
               description: 'This action is irreversible',
               onClick: async () => {
                 await ref.doc(item.id).delete()
@@ -213,8 +213,8 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
         return [
           new ContextMenuItem({
             label: 'New action',
-            icon: { name: 'VscNewFile' },
             key: `new-action:actions`,
+            icon: { type: 'action-global-add' },
             description: 'Add to this folder a new action',
             onClick: async () => {
               const name = await application.commands.editor.showQuickPick({
@@ -239,8 +239,8 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
           }),
           new ContextMenuItem({
             label: 'New folder',
-            icon: { name: 'VscNewFolder' },
             key: `new-folder:actions`,
+            icon: { type: 'folder-add' },
             description: 'Add to this folder a new folder',
             onClick: async () => {
               const name = await application.commands.editor.showQuickPick({

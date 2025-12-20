@@ -27,7 +27,7 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
           return [
             new ContextMenuItem({
               label: 'New attribute',
-              icon: { name: 'VscNewFile' },
+              icon: { type: 'structure-add' },
               key: `new-structure-attribute:${item.id}`,
               description: 'Add to this structure a new attribute',
               onClick: async () => {
@@ -54,7 +54,7 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
             new ContextMenuItem({
               label: 'Delete',
               key: `delete:${item.id}`,
-              icon: { name: 'VscTrash' },
+              icon: { type: 'delete' },
               description: 'This action is irreversible',
               onClick: async () => {
                 await ref.doc(item.id).delete()
@@ -135,7 +135,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
             return [
               new ContextMenuItem({
                 label: 'New structure',
-                icon: { name: 'VscNewFile' },
+                icon: { type: 'structure-add' },
                 key: `new-structure:${item.id}`,
                 description: 'Add to this folder a new structure',
                 onClick: async () => {
@@ -162,7 +162,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
               new ContextMenuItem({
                 label: 'New folder',
                 key: `new-folder:${item.id}`,
-                icon: { name: 'VscNewFolder' },
+                icon: { type: 'folder-add' },
                 description: 'Add to this folder a new folder',
                 onClick: async () => {
                   const name = await application.commands.editor.showQuickPick({
@@ -189,7 +189,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
               new ContextMenuItem({
                 label: 'Delete',
                 key: `delete:${item.id}`,
-                icon: { name: 'VscTrash' },
+                icon: { type: 'delete' },
                 description: 'This action is irreversible',
                 onClick: async () => {
                   await ref.doc(item.id).delete()
@@ -261,7 +261,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
           return [
             new ContextMenuItem({
               label: 'New attribute',
-              icon: { name: 'VscNewFile' },
+              icon: { type: 'structure-add' },
               key: `new-structure-attribute:${item.id}`,
               description: 'Add to this structure a new attribute',
               onClick: async () => {
@@ -288,7 +288,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
             new ContextMenuItem({
               label: 'Delete',
               key: `delete:${item.id}`,
-              icon: { name: 'VscTrash' },
+              icon: { type: 'delete' },
               description: 'This action is irreversible',
               onClick: async () => {
                 await ref.doc(item.id).delete()
@@ -357,7 +357,7 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
         return [
           new ContextMenuItem({
             label: 'New structure',
-            icon: { name: 'VscNewFile' },
+            icon: { type: 'structure-add' },
             key: `new-structure:structures`,
             description: 'Add to this folder a new structure',
             onClick: async () => {
@@ -383,7 +383,7 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
           }),
           new ContextMenuItem({
             label: 'New folder',
-            icon: { name: 'VscNewFolder' },
+            icon: { type: 'folder-add' },
             key: `new-folder:structures`,
             description: 'Add to this folder a new folder',
             onClick: async () => {

@@ -29,7 +29,7 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
             return [
               new ContextMenuItem({
                 label: 'New page',
-                icon: { name: 'VscNewFile' },
+                icon: { type: 'page-add' },
                 key: `new-page:${item.id}`,
                 description: 'Add to this folder a new page',
                 onClick: async () => {
@@ -56,7 +56,7 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
               new ContextMenuItem({
                 label: 'New folder',
                 key: `new-folder:${item.id}`,
-                icon: { name: 'VscNewFolder' },
+                icon: { type: 'folder-add' },
                 description: 'Add to this folder a new folder',
                 onClick: async () => {
                   const name = await application.commands.editor.showQuickPick({
@@ -83,7 +83,7 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
               new ContextMenuItem({
                 label: 'Delete',
                 key: `delete:${item.id}`,
-                icon: { name: 'VscTrash' },
+                icon: { type: 'delete' },
                 description: 'This action is irreversible',
                 onClick: async () => {
                   await ref.doc(item.id).delete()
@@ -159,7 +159,7 @@ const loadPages = async (application: ExtensionBase['application'], ref: ICollec
             new ContextMenuItem({
               label: 'Delete',
               key: `delete:${item.id}`,
-              icon: { name: 'VscTrash' },
+              icon: { type: 'delete' },
               description: 'This action is irreversible',
               onClick: async () => {
                 await ref.doc(item.id).delete()
@@ -214,8 +214,8 @@ export const loadPagesFolder = (application: ExtensionBase['application'], ref: 
         return [
           new ContextMenuItem({
             label: 'New page',
-            icon: { name: 'VscNewFile' },
             key: `new-page:pages`,
+            icon: { type: 'page-add' },
             description: 'Add to this folder a new page',
             onClick: async () => {
               const name = await application.commands.editor.showQuickPick({
@@ -240,8 +240,8 @@ export const loadPagesFolder = (application: ExtensionBase['application'], ref: 
           }),
           new ContextMenuItem({
             label: 'New folder',
-            icon: { name: 'VscNewFolder' },
             key: `new-folder:pages`,
+            icon: { type: 'folder-add' },
             description: 'Add to this folder a new folder',
             onClick: async () => {
               const name = await application.commands.editor.showQuickPick({

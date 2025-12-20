@@ -29,7 +29,7 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
             return [
               new ContextMenuItem({
                 label: 'New component',
-                icon: { name: 'VscNewFile' },
+                icon: { type: 'component-add' },
                 key: `new-component:${item.id}`,
                 description: 'Add to this folder a new component',
                 onClick: async () => {
@@ -56,7 +56,7 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
               new ContextMenuItem({
                 label: 'New folder',
                 key: `new-folder:${item.id}`,
-                icon: { name: 'VscNewFolder' },
+                icon: { type: 'folder-add' },
                 description: 'Add to this folder a new folder',
                 onClick: async () => {
                   const name = await application.commands.editor.showQuickPick({
@@ -83,7 +83,7 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
               new ContextMenuItem({
                 label: 'Delete',
                 key: `delete:${item.id}`,
-                icon: { name: 'VscTrash' },
+                icon: { type: 'delete' },
                 description: 'This action is irreversible',
                 onClick: async () => {
                   await ref.doc(item.id).delete()
@@ -159,7 +159,7 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
             new ContextMenuItem({
               label: 'Delete',
               key: `delete:${item.id}`,
-              icon: { name: 'VscTrash' },
+              icon: { type: 'delete' },
               description: 'This action is irreversible',
               onClick: async () => {
                 await ref.doc(item.id).delete()
@@ -213,7 +213,7 @@ export const loadComponentsFolder = (application: ExtensionBase['application'], 
         return [
           new ContextMenuItem({
             label: 'New component',
-            icon: { name: 'VscNewFile' },
+            icon: { type: 'component-add' },
             key: `new-component:components`,
             description: 'Add to this folder a new component',
             onClick: async () => {
@@ -239,7 +239,7 @@ export const loadComponentsFolder = (application: ExtensionBase['application'], 
           }),
           new ContextMenuItem({
             label: 'New folder',
-            icon: { name: 'VscNewFolder' },
+            icon: { type: 'folder-add' },
             key: `new-folder:components`,
             description: 'Add to this folder a new folder',
             onClick: async () => {

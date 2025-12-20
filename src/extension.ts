@@ -61,37 +61,6 @@ new class Extension extends ExtensionBase {
                             icon: { type: 'variable-global-folder' },
                           },
                         }),
-                        new ListViewItem({
-                          key: 'integrations-group',
-                          initialValue: {
-                            children: true,
-                            disableSelect: true,
-                            label: 'Integrations',
-                            icon: { type: 'integrations-folder' },
-                            getItems: async () => [
-                              new ListViewItem({
-                                key: 'rest-api-group',
-                                initialValue: {
-                                  children: false,
-                                  label: 'Rest API',
-                                  disableSelect: true,
-                                  getItems: async () => [],
-                                  icon: { type: 'rest-api-folder' },
-                                },
-                              }),
-                              new ListViewItem({
-                                key: 'externals-group',
-                                initialValue: {
-                                  children: false,
-                                  disableSelect: true,
-                                  label: 'External logic',
-                                  icon: { type: 'external-logic-folder' },
-                                  getItems: async () => [],
-                                },
-                              }),
-                            ],
-                          },
-                        }),
                         loadStructuresFolder(this.application, ref),
                         new ListViewItem({
                           key: 'assets-group',
@@ -132,6 +101,79 @@ new class Extension extends ExtensionBase {
                             label: 'Dependencies',
                             icon: { type: 'dependency-folder' },
                             getItems: async () => [],
+                          },
+                        }),
+                        new ListViewItem({
+                          key: 'advanced-group',
+                          initialValue: {
+                            children: true,
+                            disableSelect: true,
+                            label: 'Advanced',
+                            icon: { type: 'advanced-folder' },
+                            getItems: async () => [
+                              new ListViewItem({
+                                key: 'emittable-events-group',
+                                initialValue: {
+                                  children: false,
+                                  label: 'Events',
+                                  disableSelect: true,
+                                  getItems: async () => [],
+                                  icon: { type: 'event-folder' },
+                                },
+                              }),
+                              new ListViewItem({
+                                key: 'events-listeners-group',
+                                initialValue: {
+                                  children: false,
+                                  label: 'Listeners',
+                                  disableSelect: true,
+                                  getItems: async () => [],
+                                  icon: { type: 'listener-folder' },
+                                },
+                              }),
+                              new ListViewItem({
+                                key: 'externals-group',
+                                initialValue: {
+                                  children: true,
+                                  disableSelect: true,
+                                  label: 'External logic',
+                                  icon: { type: 'external-logic-folder' },
+                                  getItems: async () => [
+                                    new ListViewItem({
+                                      key: 'external-item-group',
+                                      initialValue: {
+                                        children: true,
+                                        label: 'Socket.IO',
+                                        disableSelect: true,
+                                        icon: { type: 'external-logic' },
+                                        getItems: async () => [
+                                          new ListViewItem({
+                                            key: 'callable-actions-group',
+                                            initialValue: {
+                                              children: false,
+                                              label: 'Actions',
+                                              disableSelect: true,
+                                              getItems: async () => [],
+                                              icon: { type: 'action-global-folder' },
+                                            },
+                                          }),
+                                          new ListViewItem({
+                                            key: 'emittable-external-events-group',
+                                            initialValue: {
+                                              children: false,
+                                              label: 'Events',
+                                              disableSelect: true,
+                                              getItems: async () => [],
+                                              icon: { type: 'listen-only-event-folder' },
+                                            },
+                                          }),
+                                        ],
+                                      },
+                                    }),
+                                  ],
+                                },
+                              }),
+                            ],
                           },
                         }),
                       ],
