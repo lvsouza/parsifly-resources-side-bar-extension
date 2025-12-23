@@ -20,7 +20,7 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
         getItems: async (context) => {
           const items = await loadStructureAttributes(application, ref.doc(item.id).collection('attributes'))
           context.set('children', items.length > 0);
-          context.set('icon', items.length > 0 ? { type: 'substructure' } : { type: 'structure-attribute' });
+          context.set('icon', items.length > 0 ? { type: 'structure-substructure-attribute' } : { type: 'structure-attribute' });
           return items
         },
         getContextMenuItems: async (context) => {
