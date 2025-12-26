@@ -19,8 +19,8 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
         },
         getItems: async (context) => {
           const items = await loadStructureAttributes(application, ref.doc(item.id).collection('attributes'))
-          context.set('children', items.length > 0);
-          context.set('icon', items.length > 0 ? { type: 'structure-substructure-attribute' } : { type: 'structure-attribute' });
+          await context.set('children', items.length > 0);
+          await context.set('icon', items.length > 0 ? { type: 'structure-substructure-attribute' } : { type: 'structure-attribute' });
           return items
         },
         getContextMenuItems: async (context) => {
@@ -74,7 +74,7 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
           if (!droppedItem || !path) return;
 
           await path.delete();
-          await ref.doc(item.id).collection('content').add(droppedItem);
+          await ref.doc(item.id).collection('attributes').add(droppedItem);
 
           const selectionId = await application.selection.get();
           if (selectionId.includes(droppedItem.id)) {
@@ -203,7 +203,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
           },
           getItems: async (context) => {
             const items = await loadStructures(application, ref.doc(item.id).collection('content'));
-            context.set('children', items.length > 0);
+            await context.set('children', items.length > 0);
             return items
           },
 
@@ -226,11 +226,11 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
           },
         },
         onDidMount: async (context) => {
-          context.set('label', item.name);
-          context.set('description', item.description || '');
+          await context.set('label', item.name);
+          await context.set('description', item.description || '');
 
           const selectionIds = await application.selection.get();
-          context.select(selectionIds.includes(item.id));
+          await context.select(selectionIds.includes(item.id));
 
           const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
           const selectionSub = application.selection.subscribe(key => context.select(key.includes(item.id)));
@@ -258,7 +258,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
         },
         getItems: async (context) => {
           const items = await loadStructureAttributes(application, ref.doc(item.id).collection('attributes'));
-          context.set('children', items.length > 0);
+          await context.set('children', items.length > 0);
           return items
         },
         getContextMenuItems: async (context) => {
@@ -321,11 +321,11 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
         },
       },
       onDidMount: async (context) => {
-        context.set('label', item.name);
-        context.set('description', item.description || '');
+        await context.set('label', item.name);
+        await context.set('description', item.description || '');
 
         const selectionIds = await application.selection.get();
-        context.select(selectionIds.includes(item.id));
+        await context.select(selectionIds.includes(item.id));
 
         const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
         const selectionSub = application.selection.subscribe(key => context.select(key.includes(item.id)));
@@ -354,7 +354,7 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
       icon: { type: 'structure-folder' },
       getItems: async (context) => {
         const items = await loadStructures(application, ref.collection('structures'));
-        context.set('children', items.length > 0);
+        await context.set('children', items.length > 0);
         return items;
       },
       getContextMenuItems: async (context) => {
