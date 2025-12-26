@@ -91,8 +91,12 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
 
         const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
         const selectionSub = application.selection.subscribe(key => context.select(key.includes(item.id)));
-        const itemsSub = await ref.doc(item.id).collection('attributes').onValue(() => context.refetchChildren());
         const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
+        const itemsSub = await ref.doc(item.id).collection('attributes').onValue(async (items) => {
+          await context.set('icon', items.length > 0 ? { type: 'structure-substructure-attribute' } : { type: 'structure-attribute' });
+          await context.set('children', items.length > 0);
+          await context.refetchChildren();
+        });
 
         context.onDidUnmount(async () => {
           selectionSub();
