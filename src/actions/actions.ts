@@ -33,7 +33,7 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
                 icon: { type: 'action-global-add' },
                 description: 'Add to this folder a new action',
                 onClick: async () => {
-                  const name = await application.commands.editor.showQuickPick({
+                  const name = await application.quickPick.show({
                     title: 'Action name?',
                     placeholder: 'Example: Action1',
                     helpText: 'Type the name of the action.',
@@ -59,7 +59,7 @@ const loadActions = async (application: ExtensionBase['application'], ref: IColl
                 icon: { type: 'folder-add' },
                 description: 'Add to this folder a new folder',
                 onClick: async () => {
-                  const name = await application.commands.editor.showQuickPick({
+                  const name = await application.quickPick.show({
                     title: 'Folder name',
                     placeholder: 'Example: Folder1',
                     helpText: 'Type the name of the folder.',
@@ -217,7 +217,7 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
             icon: { type: 'action-global-add' },
             description: 'Add to this folder a new action',
             onClick: async () => {
-              const name = await application.commands.editor.showQuickPick({
+              const name = await application.quickPick.show({
                 title: 'Action name?',
                 placeholder: 'Example: Action1',
                 helpText: 'Type the name of the action.',
@@ -243,7 +243,7 @@ export const loadActionsFolder = (application: ExtensionBase['application'], ref
             icon: { type: 'folder-add' },
             description: 'Add to this folder a new folder',
             onClick: async () => {
-              const name = await application.commands.editor.showQuickPick({
+              const name = await application.quickPick.show({
                 title: 'Folder name',
                 placeholder: 'Example: Folder1',
                 helpText: 'Type the name of the folder.',

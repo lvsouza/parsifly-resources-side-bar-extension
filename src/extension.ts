@@ -206,7 +206,7 @@ new class Extension extends ExtensionBase {
   async activate() {
     this.application.views.register(this.resourcesListView);
 
-    await this.application.commands.editor.showPrimarySideBarByKey('resources-side-bar');
+    await this.application.views.showPrimarySideBarByKey('resources-side-bar');
   }
 
   async deactivate() {

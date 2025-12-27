@@ -33,7 +33,7 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
                 key: `new-component:${item.id}`,
                 description: 'Add to this folder a new component',
                 onClick: async () => {
-                  const name = await application.commands.editor.showQuickPick({
+                  const name = await application.quickPick.show({
                     title: 'Component name?',
                     placeholder: 'Example: Component1',
                     helpText: 'Type the name of the component.',
@@ -59,7 +59,7 @@ const loadComponents = async (application: ExtensionBase['application'], ref: IC
                 icon: { type: 'folder-add' },
                 description: 'Add to this folder a new folder',
                 onClick: async () => {
-                  const name = await application.commands.editor.showQuickPick({
+                  const name = await application.quickPick.show({
                     title: 'Folder name',
                     placeholder: 'Example: Folder1',
                     helpText: 'Type the name of the folder.',
@@ -217,7 +217,7 @@ export const loadComponentsFolder = (application: ExtensionBase['application'], 
             key: `new-component:components`,
             description: 'Add to this folder a new component',
             onClick: async () => {
-              const name = await application.commands.editor.showQuickPick({
+              const name = await application.quickPick.show({
                 title: 'Component name?',
                 placeholder: 'Example: Component1',
                 helpText: 'Type the name of the component.',
@@ -243,7 +243,7 @@ export const loadComponentsFolder = (application: ExtensionBase['application'], 
             key: `new-folder:components`,
             description: 'Add to this folder a new folder',
             onClick: async () => {
-              const name = await application.commands.editor.showQuickPick({
+              const name = await application.quickPick.show({
                 title: 'Folder name',
                 placeholder: 'Example: Folder1',
                 helpText: 'Type the name of the folder.',

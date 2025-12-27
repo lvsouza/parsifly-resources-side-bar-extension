@@ -31,7 +31,7 @@ const loadStructureAttributes = async (application: ExtensionBase['application']
               key: `new-structure-attribute:${item.id}`,
               description: 'Add to this structure a new attribute',
               onClick: async () => {
-                const name = await application.commands.editor.showQuickPick({
+                const name = await application.quickPick.show({
                   title: 'Attribute name?',
                   placeholder: 'Example: Attribute1',
                   helpText: 'Type the name of the attribute.',
@@ -143,7 +143,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
                 key: `new-structure:${item.id}`,
                 description: 'Add to this folder a new structure',
                 onClick: async () => {
-                  const name = await application.commands.editor.showQuickPick({
+                  const name = await application.quickPick.show({
                     title: 'Structure name?',
                     placeholder: 'Example: Structure1',
                     helpText: 'Type the name of the structure.',
@@ -169,7 +169,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
                 icon: { type: 'folder-add' },
                 description: 'Add to this folder a new folder',
                 onClick: async () => {
-                  const name = await application.commands.editor.showQuickPick({
+                  const name = await application.quickPick.show({
                     title: 'Folder name',
                     placeholder: 'Example: Folder1',
                     helpText: 'Type the name of the folder.',
@@ -234,8 +234,11 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
 
           const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
           const selectionSub = application.selection.subscribe(key => context.select(key.includes(item.id)));
-          const itemsSub = await ref.doc(item.id).collection('content').onValue(() => context.refetchChildren());
           const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
+          const itemsSub = await ref.doc(item.id).collection('content').onValue(async (items) => {
+            await context.set('children', items.length > 0);
+            await context.refetchChildren();
+          });
 
           context.onDidUnmount(async () => {
             selectionSub();
@@ -269,7 +272,7 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
               key: `new-structure-attribute:${item.id}`,
               description: 'Add to this structure a new attribute',
               onClick: async () => {
-                const name = await application.commands.editor.showQuickPick({
+                const name = await application.quickPick.show({
                   title: 'Attribute name?',
                   placeholder: 'Example: Attribute1',
                   helpText: 'Type the name of the attribute.',
@@ -329,8 +332,11 @@ const loadStructures = async (application: ExtensionBase['application'], ref: IC
 
         const nameSub = await ref.doc(item.id).field('name').onValue(value => context.set('label', value));
         const selectionSub = application.selection.subscribe(key => context.select(key.includes(item.id)));
-        const itemsSub = await ref.doc(item.id).collection('attributes').onValue(() => context.refetchChildren());
         const descriptionSub = await ref.doc(item.id).field('description').onValue(value => context.set('description', value || ''));
+        const itemsSub = await ref.doc(item.id).collection('attributes').onValue(async (items) => {
+          await context.set('children', items.length > 0);
+          await context.refetchChildren();
+        });
 
         context.onDidUnmount(async () => {
           selectionSub();
@@ -365,7 +371,7 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
             key: `new-structure:structures`,
             description: 'Add to this folder a new structure',
             onClick: async () => {
-              const name = await application.commands.editor.showQuickPick({
+              const name = await application.quickPick.show({
                 title: 'Structure name?',
                 placeholder: 'Example: Structure1',
                 helpText: 'Type the name of the structure.',
@@ -391,7 +397,7 @@ export const loadStructuresFolder = (application: ExtensionBase['application'], 
             key: `new-folder:structures`,
             description: 'Add to this folder a new folder',
             onClick: async () => {
-              const name = await application.commands.editor.showQuickPick({
+              const name = await application.quickPick.show({
                 title: 'Folder name',
                 placeholder: 'Example: Folder1',
                 helpText: 'Type the name of the folder.',
